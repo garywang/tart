@@ -147,9 +147,14 @@ def find_blobs(arr, color=None, reverse=False):
 
 def find_closest_ball(cam, arr):
     for b in find_blobs(arr, color=RED, reverse=True):
-        if len(b)>4:            #TODO: check trig to see if size is reasonable
+        if isBall(cam, b):
             return b[0]         #TODO: convert to angles
     return None
+
+def isBall(cam, blob):
+    """Check if a list of pixels is a ball"""
+    #TODO: check trig to see if size is reasonable
+    return len(blob)>4
 
 
 
