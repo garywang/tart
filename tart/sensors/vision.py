@@ -169,11 +169,25 @@ class VisionThread(threading.Thread):
         self.running=True
         while self.running:
             im=self.cam.get_image()
+            im=im.filter(GaussianBlur(1))
             im.thumbnail((150, 150), Image.ANTIALIAS)
             arr=image_to_color(im)
             
             self.closest_ball=find_closest_ball(self.cam, arr)
 
+
+
+
+class GaussianBlur(ImageFilter.Filter):
+    # PIL's Python interface to its (undocumented) gaussian_blur()
+    # function has a bug that always sets self.radius to 2.
+    
+    name = "GaussianBlur"
+
+    def __init__(self, radius=2):
+        self.radius = radius
+    def filter(self, image):
+        return image.gaussian_blur(self.radius)
 
 
 #5x slower than PIL's convolve function, but allows out-of-bounds values
@@ -212,6 +226,4 @@ def find_edges(arr):
 
 def save_image(arr, filename):
     arr_to_image(arr).save(filename)
-
-
 

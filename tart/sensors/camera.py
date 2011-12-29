@@ -19,14 +19,5 @@ class FileCamera(Camera):
         im=Image.open(self.file)
         if im.mode != 'RGB':
             im=im.convert('RGB')
-        im=im.filter(GaussianBlur(1))
         return im
-        
-        
-class GaussianBlur(ImageFilter.Filter):
-    name = "GaussianBlur"
 
-    def __init__(self, radius=2):
-        self.radius = radius
-    def filter(self, image):
-        return image.gaussian_blur(self.radius)
