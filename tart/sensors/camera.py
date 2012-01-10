@@ -1,13 +1,9 @@
-from PIL import Image, ImageFilter
+import cv
 
 __all__ = ['Camera', 'FileCamera']
 
 class Camera(object):
-    """An abstract class that represents sources of images"""
-    
-    def get_image(self):
-        """Returns an Image object containing the current image"""
-        return []
+    """A class that represents sources of images"""
 
 class FileCamera(Camera):
     """A Camera that reads images from files"""
@@ -16,8 +12,6 @@ class FileCamera(Camera):
         self.file=file
     
     def get_image(self):
-        im=Image.open(self.file)
-        if im.mode != 'RGB':
-            im=im.convert('RGB')
+        im=cv.LoadImage(self.file, iscolor=cv.CV_LOAD_IMAGE_COLOR)
         return im
 

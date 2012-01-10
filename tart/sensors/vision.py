@@ -3,7 +3,7 @@ from collections import deque
 import math
 import time
 import threading
-
+import cv
 
 
 def image_to_arr(im, func=None):
@@ -100,15 +100,32 @@ def color_to_rgb(color):
     else:
         return (0, 0, 0)
 
-def rgb_to_color(rgb):
-    return hsv_to_color(rgb_to_hsv(rgb))
+#def rgb_to_color(rgb):
+#    return hsv_to_color(rgb_to_hsv(rgb))
+
+#def image_to_color(im):
+#    return image_to_arr(im, rgb_to_color)
 
 def image_to_color(im):
-    return image_to_arr(im, rgb_to_color)
+    hsv=cv.CreateImage((im.width, im.height), cv.IPL_DEPTH_32F, 3)
+    cv.ConvertScale(im, hsv, scale=1/255.)
+    cv.CvtColor(hsv, hsv, cv.CV_BGR2HSV)
+    colors=cv.CreateImage((im.width, im.height), cv.IPL_DEPTH_8U, 1)
+    for i in range(im.height):
+        for j in range(im.width):
+            colors[i, j]=hsv_to_color(hsv[i, j])
+    return colors
+    
+def color_to_image(colors):
+    rgb=cv.CreateImage((colors.width, colors.height), cv.IPL_DEPTH_32F, 3)
+    for i in range(colors.height):
+        for j in range(colors.width):
+            rgb[i, j]=color_to_rgb(colors[i, j])
+    cv.CvtColor(rgb, rgb, cv.CV_RGB2BGR)
+    return rgb
 
 
-
-def find_blobs(arr, color=None, reverse=False):
+def find_blobs(im, color=None, reverse=False):
     """Find connected components
     
     Returns a (lazy) sequence containing the connected components of 'arr'
@@ -117,17 +134,17 @@ def find_blobs(arr, color=None, reverse=False):
     is True, components are found starting from the bottom."""
     
     if not reverse:
-        rows=range(len(arr))
+        rows=range(im.height)
     else:
-        rows=range(len(arr)-1, -1, -1)
+        rows=range(im.height-1, -1, -1)
     
     done=set()
     for i in rows:
-        for j in range(len(arr[0])):
+        for j in range(im.width):
             
             if ( ((i, j) in done) or
-                 (color is None and arr[i][j]==0) or
-                 (color is not None and arr[i][j]!=color) ):
+                 (color is None and im[i, j]==0) or
+                 (color is not None and im[i, j]!=color) ):
                 continue
             
             #We've found a new component:
@@ -137,16 +154,16 @@ def find_blobs(arr, color=None, reverse=False):
             while(que):
                 i, j=que.popleft()
                 for ii, jj in [(i-1, j), (i+1, j), (i, j-1), (i, j+1)]:
-                    if   (ii>=0 and ii<len(arr) and jj>=0 and jj<len(arr[0]) and
-                          (ii, jj) not in done and arr[i][j]==arr[ii][jj]):
+                    if   (ii>=0 and ii<im.height and jj>=0 and jj<im.width and
+                          (ii, jj) not in done and im[i, j]==im[ii, jj]):
                         done.add((ii, jj))
                         current.append((ii, jj))
                         que.append((ii, jj))
             yield current
     return
 
-def find_closest_ball(cam, arr):
-    for b in find_blobs(arr, color=RED, reverse=True):
+def find_closest_ball(cam, im):
+    for b in find_blobs(im, color=RED, reverse=True):
         if isBall(cam, b):
             return b[0]         #TODO: convert to angles
     return None
@@ -169,11 +186,13 @@ class VisionThread(threading.Thread):
         self.running=True
         while self.running:
             im=self.cam.get_image()
-            im=im.filter(GaussianBlur(1))
-            im.thumbnail((150, 150), Image.ANTIALIAS)
-            arr=image_to_color(im)
+            small_im=cv.CreateImage((im.width/2, im.height/2), cv.IPL_DEPTH_8U, 3)
+            cv.PyrDown(im, small_im);
+            #im=im.filter(GaussianBlur(1))
+            #im.thumbnail((150, 150), Image.ANTIALIAS)
+            colors=image_to_color(small_im)
             
-            self.closest_ball=find_closest_ball(self.cam, arr)
+            self.closest_ball=find_closest_ball(self.cam, colors)
 
 
 
@@ -223,7 +242,7 @@ def find_edges(arr):
 
 
 
-
-def save_image(arr, filename):
-    arr_to_image(arr).save(filename)
-
+def show_image(im, name="foo"):
+    for i in range(10):
+        cv.ShowImage(name, im)
+        cv.WaitKey(10)
