@@ -13,15 +13,15 @@ if __name__=="__main__":
 
         motor0.setVal(127)
         motor1.setVal(327)
-	time.sleep(2)
+        time.sleep(2)
 
-	motor0.setVal(0)
-	motor1.setVal(0)
-	time.sleep(1)
+        motor0.setVal(0)
+        motor1.setVal(0)
+        time.sleep(1)
 
-	motor0.setVal(327)
-	motor1.setVal(127)
-	time.sleep(2)
+        motor0.setVal(327)
+        motor1.setVal(127)
+        time.sleep(2)
 
         ard.close()
     #This is so that when you hit ctrl-C in the terminal, all the arduino threads close. You can do something similar with threads in your program.
