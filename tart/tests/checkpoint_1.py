@@ -1,25 +1,27 @@
 import sys, time
-sys.path.append("Libraries/")
+sys.path.append("/home/maslab-team-5/Maslab/tart/")
+sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
 import arduino
+from tart.controls import motor
 
 if __name__=="__main__":
     try:
         ard = arduino.Arduino()
-        motor0 = arduino.Motor(ard,0) #0 is the Qik number
-        motor1 = arduino.Motor(ard,1)
+        motor0 = motor.Motor(ard,0)
+        motor1 = motor.Motor(ard,1)
 
         ard.start()
         while not ard.portOpened: time.sleep(0.001) #Wait for the arduino to be ready, before sending commands
 
         motor0.setVal(127)
-        motor1.setVal(327)
+        motor1.setVal(-127)
         time.sleep(2)
 
         motor0.setVal(0)
         motor1.setVal(0)
         time.sleep(1)
 
-        motor0.setVal(327)
+        motor0.setVal(-127)
         motor1.setVal(127)
         time.sleep(2)
 

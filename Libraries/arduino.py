@@ -141,7 +141,7 @@ class Motor:
         self.motorNum = _num
         self.ID = "M{0}".format(_num)
 
-    def setVal(self,val): #val between 0 and 255
+    def setVal(self,val): #val between 0 and 127 (forward) or 200 and 327 (reverse). dependent on ArduinoBasicCommandDecoder.pde
         command ="M%(num)01d%(val)03d" %{'num': self.motorNum, 'val':val}
         self.arduino.addCommand(command, self.ID, .03, True)
 
