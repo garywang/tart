@@ -27,7 +27,7 @@ class Arduino(threading.Thread):
     def connect(self):
         if self.portOpened: self.close()
         try:
-            self.port=serial.Serial(port='/dev/ttyACM0', baudrate=9600, timeout=0)
+            self.port=serial.Serial(port='/dev/ttyACM0', baudrate=9600, timeout=1)
             #usb.core.find(idVendor=0x2341 idProduct=0x0042)
             time.sleep(2) #Allows the arduino to initialize
             self.port.flush()
@@ -97,7 +97,7 @@ class Arduino(threading.Thread):
                 #print command
 
                 #Pause so the arduino can process
-                time.sleep(delayParam) #<---maybe
+                #time.sleep(delayParam) #<---maybe
 
                 #Read from arduino
                 fromArd = self.port.readline()
@@ -143,7 +143,7 @@ class Motor:
 
     def setVal(self,val): #val between 0 and 127 (forward) or 200 and 327 (reverse). dependent on ArduinoBasicCommandDecoder.pde
         command ="M%(num)01d%(val)03d" %{'num': self.motorNum, 'val':val}
-        self.arduino.addCommand(command, self.ID, .03, True)
+        self.arduino.addCommand(command, self.ID, 0.1, True)
 
 ###############Digital Sensor Class###############
 class DigitalSensor:
