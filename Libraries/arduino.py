@@ -143,7 +143,7 @@ class Motor:
 
     def setVal(self,val): #val between 0 and 255
         command ="M%(num)01d%(val)03d" %{'num': self.motorNum, 'val':val}
-        self.arduino.addCommand(command, self.ID, .1, True)
+        self.arduino.addCommand(command, self.ID, .03, True)
 
 ###############Digital Sensor Class###############
 class DigitalSensor:
