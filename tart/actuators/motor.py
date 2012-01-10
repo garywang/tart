@@ -1,4 +1,5 @@
-sys.path.append("Libraries/")
+import sys
+sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
 import arduino
 
 class Motor(arduino.Motor):
