@@ -89,7 +89,7 @@ class Arduino(threading.Thread):
                 
                 delayParam = float(self.commandDict[portNum][1])
 
-                #self.lock.release()
+                self.lock.release()
                 
                 #Write Command
                 self.port.flush()
