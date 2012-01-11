@@ -10,14 +10,12 @@ if __name__=="__main__":
         ard = arduino.Arduino()
         motor0 = motor.Motor(ard,0)
         motor1 = motor.Motor(ard,1)
-        switch = sensor.BumpSensor(ard,3)
+        switch = sensor.BumpSensor(ard,2)
 
         ard.start()
         while not ard.portOpened: time.sleep(0.001) #Wait for the arduino to be ready, before sending commands
         
         for i in range(300):
-            value = switch.getValue()
-            print "Sensor: " + str(value)
             if switch.pressed():
                 print "Wall bumped"
                 break
