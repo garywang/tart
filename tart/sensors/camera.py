@@ -1,5 +1,6 @@
 import cv
 import threading
+import time
 
 class FileCamera():
     """A "camera" that reads images from files"""
@@ -19,6 +20,9 @@ class RealCamera():
     
     def get_image(self):
         return cv.QueryFrame(self.capture)
+    
+    def update(self):
+        cv.GrabFrame(self.capture)
 
 class WrapperCamera(threading.Thread):
     """Continuously call get_image of wrapped camera, return latest result"""
@@ -33,15 +37,18 @@ class WrapperCamera(threading.Thread):
         self.running=True
         while self.running:
             #self.lock.acquire()
-            self.image=self.cam.get_image()
+            #self.image=self.cam.get_image()
+            self.cam.update()
+            time.sleep(0.1)
             #self.lock.release()
     
     def get_image(self):
         #self.lock.acquire()
-        im=cv.CreateImage((self.image.width, self.image.height), cv.IPL_DEPTH_8U, 3)
-        cv.Copy(self.image, im)
+        #self.image=self.cam.get_image()
+        #im=cv.CreateImage((self.image.width, self.image.height), cv.IPL_DEPTH_8U, 3)
+        #cv.Copy(self.image, im)
         #self.lock.release()
-        return im
+        return self.cam.get_image()
     
     def stop(self):
         self.running=False
