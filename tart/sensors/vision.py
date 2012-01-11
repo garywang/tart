@@ -126,7 +126,7 @@ class VisionThread(threading.Thread):
     def find_closest_ball(self, im):
         for b in find_blobs(im, color=RED, reverse=True):
             if self.is_ball(b):
-                return b[0]         #TODO: convert to angles
+                return self.cam.info.get_vector(b[0], im)
         return None
     
     def is_ball(self, blob):

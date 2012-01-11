@@ -73,7 +73,7 @@ class WebCam(Camera):
     """Our webcam"""
     
     def __init__(self, wrapped=True):
-        self.info=CameraInfo(cam_height=84., height_angle=0.70, width_angle=0.93, min_dist=88.)
+        self.info=CameraInfo(cam_height=29., height_angle=0.70, width_angle=0.93, min_dist=28.)
         rc=RealCamera(1, self.info)
         if(wrapped):
             self.cam=WrapperCamera(rc)

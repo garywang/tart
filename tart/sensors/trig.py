@@ -15,9 +15,11 @@ class CameraInfo():
         self.min_dist=min_dist+0.
         self.low_angle=math.atan(self.min_dist/self.cam_height)
     
-    def get_vector(rc):
-        row=rc[0]+0.
-        col=rc[1]+0.
-        y=math.tan(math.atan((1.-r)*math.sin(self.height_angle)/(r+(1.-r)*math.cos(self.height_angle))) \
-                    +self.low_angle)
-        return y
+    def get_vector(self, rc, im, height=0):
+        r=(rc[0]+0.)/im.height
+        c=(rc[1]+0.)/im.width
+        dheight=self.cam_height-height
+        y_angle=math.atan((1.-r)*math.sin(self.height_angle)/(r+(1.-r)*math.cos(self.height_angle)))
+        y=dheight*math.tan(y_angle+self.low_angle)
+        x=math.sqrt(y*y+dheight*dheight)*math.tan(self.width_angle/2)*2*(c-.5)
+        return (x, y, height)
