@@ -1,10 +1,10 @@
 import time, sys
 sys.path.append("/home/maslab-team-5/Maslab/tart/")
-from tart.sensors import mouse
+from tart.sensors.mouse import Mouse
 
 if __name__=="__main__":
     try:
-        mouse=mouse.Mouse(0)
+        mouse=Mouse(0)
         while True:
             print mouse.speed, mouse.total
             time.sleep(0.01)
