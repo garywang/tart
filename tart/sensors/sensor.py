@@ -1,6 +1,6 @@
 import arduino
 
-class BumpSensor(arduino.analogSensor):
+class BumpSensor(arduino.AnalogSensor):
     """Limit switch wrapper class"""
     
     def pressed(self):
