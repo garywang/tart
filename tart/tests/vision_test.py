@@ -11,6 +11,7 @@ if __name__=="__main__":
         while True:
             cv.ShowImage("asdf", vision.convert_to_image(vt.colors))
             cv.WaitKey(10)
+            time.sleep(0.05)
     except KeyboardInterrupt:
         print "Ending Program"
     
