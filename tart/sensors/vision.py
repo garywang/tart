@@ -188,57 +188,21 @@ class VisionThread(threading.Thread):
             im=self.cam.get_image()
             small_im=cv.CreateImage((im.width/2, im.height/2), cv.IPL_DEPTH_8U, 3)
             cv.PyrDown(im, small_im);
+            smaller_im=cv.CreateImage((im.width/4, im.height/4), cv.IPL_DEPTH_8U, 3)
+            cv.PyrDown(small_im, smaller_im);
+            
             #im=im.filter(GaussianBlur(1))
             #im.thumbnail((150, 150), Image.ANTIALIAS)
-            colors=image_to_color(small_im)
+            colors=image_to_color(smaller_im)
             
             self.closest_ball=find_closest_ball(self.cam, colors)
-
-
-
-
-class GaussianBlur(ImageFilter.Filter):
-    # PIL's Python interface to its (undocumented) gaussian_blur()
-    # function has a bug that always sets self.radius to 2.
+            print self.closest_ball
+            self.colors=colors
+            
+            #time.sleep(0)
     
-    name = "GaussianBlur"
-
-    def __init__(self, radius=2):
-        self.radius = radius
-    def filter(self, image):
-        return image.gaussian_blur(self.radius)
-
-
-#5x slower than PIL's convolve function, but allows out-of-bounds values
-def convolve3(arr, mat):
-    imax=len(arr)
-    jmax=len(arr[0])
-    kmax=len(arr[0][0])
-    res=[[ [0, 0, 0] for j in arr[0] ] for i in arr]
-    for i in range(imax):
-        for j in range(jmax):
-            for ii in range(-1, 2):
-                for jj in range(-1, 2):
-                    for k in range(kmax):
-                        res[i][j][k]+=arr[min(max(i+ii, 0), imax-1)][min(max(j+jj, 0), jmax-1)][k]*mat[ii][jj]
-    return res
-
-def find_edges(arr):
-    res=[[ [0, 0, 0] for j in arr[0] ] for i in arr]
-    one=convolve3(arr, [[-1, -2, -1], 
-                       [ 0,  0,  0],
-                       [ 1,  2,  1]])
-    two=convolve3(arr, [[-1, 0, 1],
-                       [-2, 0, 2],
-                       [-1, 0, 1]])
-    imax=len(arr)
-    jmax=len(arr[0])
-    kmax=len(arr[0][0])
-    for i in range(imax):
-        for j in range(jmax):
-            for k in range(kmax):
-                res[i][j][k]=math.trunc(math.sqrt(one[i][j][k]*one[i][j][k]+two[i][j][k]*two[i][j][k])+.5)
-    return res
+    def stop(self):
+        self.running=False
 
 
 
