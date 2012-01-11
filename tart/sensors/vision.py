@@ -110,14 +110,16 @@ class VisionThread(threading.Thread):
             cv.PyrDown(im, small_im);
             smaller_im=cv.CreateImage((im.width/4, im.height/4), cv.IPL_DEPTH_8U, 3)
             cv.PyrDown(small_im, smaller_im);
+            smallerer_im=cv.CreateImage((im.width/8, im.height/8), cv.IPL_DEPTH_8U, 3)
+            cv.PyrDown(smaller_im, smallerer_im);
             
-            colors=convert_to_colors(smaller_im)
+            colors=convert_to_colors(smallerer_im)
             
             self.closest_ball=self.find_closest_ball(colors)
             print self.closest_ball
             self.colors=colors
             
-            #time.sleep(0)
+            time.sleep(0)
     
     def stop(self):
         self.running=False
@@ -131,7 +133,6 @@ class VisionThread(threading.Thread):
     
     def is_ball(self, blob, im):
         """Check if a list of pixels is a ball"""
-        #TODO: check trig to see if size is reasonable
         size=self.cam.info.get_pixel_size(blob[0], im)*len(blob)
         return size>15 and size<45
 
