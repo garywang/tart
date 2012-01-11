@@ -6,7 +6,7 @@ if __name__=="__main__":
     try:
         mouse=Mouse(0)
         while True:
-            print mouse.speed, mouse.total
+            print mouse.get_speed(), mouse.get_pos()
             time.sleep(0.01)
     except KeyboardInterrupt:
         print "Ending Program"

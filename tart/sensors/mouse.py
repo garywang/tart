@@ -5,16 +5,15 @@ class Mouse(threading.Thread):
     def __init__(self, num):
         threading.Thread.__init__(self)
         self.mouse=open("/dev/input/mouse"+str(num), "r")
+        self.pos=(0, 0)
+        self.sumx=0
+        self.sumy=0
+        self.d=deque()
+        self.interval=0.04
         self.start()
     
     def run(self):
         self.running=True
-        self.speed=(0, 0)
-        self.total=(0, 0)
-        sumx=0
-        sumy=0
-        d=deque()
-        interval=0.04
         while self.running:
             s=self.mouse.read(3)
             x, y=ord(s[1]), ord(s[2])
@@ -22,16 +21,21 @@ class Mouse(threading.Thread):
                 x-=256
             if ord(s[0])&32>0:
                 y-=256
-            sumx+=x
-            sumy+=y
-            t=time.time()
-            d.append((t, x, y))
-            while t-d[0][0]>interval:
-                sumx-=d[0][1]
-                sumy-=d[0][2]
-                d.popleft()
-            self.speed=(sumx/interval, sumy/interval)
-            self.total=(self.total[0]+x, self.total[1]+y)
+            self.sumx+=x
+            self.sumy+=y
+            self.d.append((time.time(), x, y))
+            self.pos=(self.pos[0]+x, self.pos[1]+y)
+    
+    def get_speed(self):
+        t=time.time()
+        while len(self.d)>0 and t-self.d[0][0]>self.interval:
+            self.sumx-=self.d[0][1]
+            self.sumy-=self.d[0][2]
+            self.d.popleft()
+        return (self.sumx/self.interval, self.sumy/self.interval)
+    
+    def get_pos(self):
+        return self.pos
     
     def stop(self):
         self.running=False
