@@ -1,8 +1,22 @@
-import cv
-import threading
-import time
+import cv, threading, time
+from tart.sensors.trig import CameraInfo
 
-class FileCamera():
+
+class Camera():
+    
+    def __init__(self):
+        self.info=None
+    
+    def get_image(self):
+        pass
+    
+    def update(self):
+        pass
+    
+    def stop(self):
+        pass
+
+class FileCamera(Camera):
     """A "camera" that reads images from files"""
     
     def __init__(self, file):
@@ -12,11 +26,12 @@ class FileCamera():
         im=cv.LoadImage(self.file, iscolor=cv.CV_LOAD_IMAGE_COLOR)
         return im
 
-class RealCamera():
+class RealCamera(Camera):
     """An actual camera"""
     
-    def __init__(self, num):
+    def __init__(self, num, info):
         self.capture=cv.CaptureFromCAM(num)
+        self.info=info
     
     def get_image(self):
         return cv.QueryFrame(self.capture)
@@ -24,12 +39,13 @@ class RealCamera():
     def update(self):
         cv.GrabFrame(self.capture)
 
-class WrapperCamera(threading.Thread):
+class WrapperCamera(threading.Thread, Camera):
     """Continuously call get_image of wrapped camera, return latest result"""
     
     def __init__(self, cam):
         threading.Thread.__init__(self)
         self.cam=cam
+        self.info=cam.info
         self.lock=threading.Lock()
         self.start()
     
@@ -52,3 +68,20 @@ class WrapperCamera(threading.Thread):
     
     def stop(self):
         self.running=False
+
+class WebCam(Camera):
+    """Our webcam"""
+    
+    def __init__(self, wrapped=True):
+        self.info=CameraInfo(cam_height=29., height_angle=0.70, width_angle=0.93, min_dist=28.)
+        rc=RealCamera(1, self.info)
+        if(wrapped):
+            self.cam=WrapperCamera(rc)
+        else:
+            self.cam=rc
+    
+    def get_image(self):
+        return self.cam.get_image()
+    
+    def stop(self):
+        self.cam.stop()

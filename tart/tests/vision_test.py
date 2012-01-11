@@ -4,10 +4,8 @@ from tart.sensors import camera, vision
 
 if __name__=="__main__":
     try:
-        rc=camera.RealCamera(1)
-        wc=camera.WrapperCamera(rc)
-        vt=vision.VisionThread(wc)
-        #vt=vision.VisionThread(rc)
+        cam=camera.WebCam()
+        vt=vision.VisionThread(cam)
         vt.start()
         time.sleep(1)
         while True:
@@ -18,4 +16,4 @@ if __name__=="__main__":
     
     finally:
         vt.stop()
-        wc.stop()
+
