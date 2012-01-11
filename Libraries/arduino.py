@@ -1,4 +1,4 @@
-import usb.core, usb.util, serial, time, copy, Queue
+import serial, time, copy, Queue
 import threading, thread
 
 timeout = 1
@@ -31,7 +31,7 @@ class Arduino(threading.Thread):
             #usb.core.find(idVendor=0x2341 idProduct=0x0042)
             time.sleep(2) #Allows the arduino to initialize
             self.port.flush()
-        except:
+        except serial.SerialException:
             print "Arduino not connected"
             return False
         print "Connected"
