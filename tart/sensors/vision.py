@@ -121,14 +121,15 @@ class VisionThread(threading.Thread):
     
     def stop(self):
         self.running=False
+        self.cam.stop()
     
     def find_closest_ball(self, im):
         for b in find_blobs(im, color=RED, reverse=True):
-            if self.isBall(b):
+            if self.is_ball(b):
                 return b[0]         #TODO: convert to angles
         return None
     
-    def isBall(self, blob):
+    def is_ball(self, blob):
         """Check if a list of pixels is a ball"""
         #TODO: check trig to see if size is reasonable
         return len(blob)>4
