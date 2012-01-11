@@ -94,18 +94,6 @@ def find_blobs(im, color=None, reverse=False):
             yield current
     return
 
-def find_closest_ball(cam, im):
-    for b in find_blobs(im, color=RED, reverse=True):
-        if isBall(cam, b):
-            return b[0]         #TODO: convert to angles
-    return None
-
-def isBall(cam, blob):
-    """Check if a list of pixels is a ball"""
-    #TODO: check trig to see if size is reasonable
-    return len(blob)>4
-
-
 
 
 class VisionThread(threading.Thread):
@@ -125,7 +113,7 @@ class VisionThread(threading.Thread):
             
             colors=convert_to_colors(smaller_im)
             
-            self.closest_ball=find_closest_ball(self.cam, colors)
+            self.closest_ball=self.find_closest_ball(colors)
             print self.closest_ball
             self.colors=colors
             
@@ -133,10 +121,22 @@ class VisionThread(threading.Thread):
     
     def stop(self):
         self.running=False
+    
+    def find_closest_ball(self, im):
+        for b in find_blobs(im, color=RED, reverse=True):
+            if self.isBall(b):
+                return b[0]         #TODO: convert to angles
+        return None
+    
+    def isBall(self, blob):
+        """Check if a list of pixels is a ball"""
+        #TODO: check trig to see if size is reasonable
+        return len(blob)>4
 
 
 
-def show_image(im, name="foo"):
-    for i in range(10):
+
+def show_image(im, name="foo", num=10):
+    for i in range(num):
         cv.ShowImage(name, im)
         cv.WaitKey(10)
