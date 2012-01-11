@@ -6,68 +6,6 @@ import threading
 import cv
 
 
-def image_to_arr(im, func=None):
-    """Convert Image to 2d list
-    
-    Given an Image object, returns a 2d list containing all the pixels in the
-    Image.  If func is given, func is applied to each pixel."""
-    data=im.load()
-    arr=[];
-    for i in range(im.size[1]):
-        arr.append([])
-        for j in range(im.size[0]):
-            if func is None:
-                arr[i].append(data[j, i])
-            else:
-                arr[i].append(func(data[j, i]))
-    return arr
-
-def arr_to_image(arr, func=None, mode='RGB'):
-    """Convert 2d list to Image
-    
-    Given a 2d list, returns an Image object where each pixel is an item in
-    the list.  If func is given, func is applied to each item."""
-    image=Image.new(mode, (len(arr[0]), len(arr)))
-    data=image.load()
-    for i in range(len(arr)):
-        for j in range(len(arr[0])):
-            if func is None:
-                data[j, i]=tuple(arr[i][j])
-            else:
-                data[j, i]=func(arr[i][j])
-    return image
-
-
-
-
-def rgb_to_hsv(rgb):    #rgb, not rgt
-    """Given a tuple of values in rgb, return a tuple of values in hsv"""
-    
-    r, g, b=rgb[0]/255., rgb[1]/255., rgb[2]/255.
-    
-    v=max(r, g, b)
-    delta=v-min(r, g, b)
-    
-    if v==0:
-        return (0, 0, 0)
-    
-    s=delta/v
-    
-    if delta==0:
-        h=0
-    elif r==v:
-        h=(g-b)/delta
-    elif g==v:
-        h=2+(b-r)/delta
-    else:
-        h=4+(r-g)/delta
-    
-    if h<0:
-        h+=6
-    
-    return (h*60, s, v)
-    
-
 #Colors
 RED=1           #ball
 WHITE=2         #wall
@@ -77,7 +15,7 @@ PURPLE=5        #5-point line
 GREEN=6         #bin
 GRAY=0          #everything else
 
-def hsv_to_color(hsv):
+def get_color_from_hsv(hsv):
     h, s, v=hsv
     if s<0.35 and v>0.7:
         return WHITE
@@ -90,7 +28,7 @@ def hsv_to_color(hsv):
     else:
         return GRAY
 
-def color_to_rgb(color):
+def get_rgb_from_color(color):
     if color==RED:
         return (255, 0, 0)
     elif color==WHITE:
@@ -100,27 +38,21 @@ def color_to_rgb(color):
     else:
         return (0, 0, 0)
 
-#def rgb_to_color(rgb):
-#    return hsv_to_color(rgb_to_hsv(rgb))
-
-#def image_to_color(im):
-#    return image_to_arr(im, rgb_to_color)
-
-def image_to_color(im):
+def convert_to_colors(im):
     hsv=cv.CreateImage((im.width, im.height), cv.IPL_DEPTH_32F, 3)
     cv.ConvertScale(im, hsv, scale=1/255.)
     cv.CvtColor(hsv, hsv, cv.CV_BGR2HSV)
     colors=cv.CreateImage((im.width, im.height), cv.IPL_DEPTH_8U, 1)
     for i in range(im.height):
         for j in range(im.width):
-            colors[i, j]=hsv_to_color(hsv[i, j])
+            colors[i, j]=get_color_from_hsv(hsv[i, j])
     return colors
     
-def color_to_image(colors):
+def convert_to_image(colors):
     rgb=cv.CreateImage((colors.width, colors.height), cv.IPL_DEPTH_32F, 3)
     for i in range(colors.height):
         for j in range(colors.width):
-            rgb[i, j]=color_to_rgb(colors[i, j])
+            rgb[i, j]=get_rgb_from_color(colors[i, j])
     cv.CvtColor(rgb, rgb, cv.CV_RGB2BGR)
     return rgb
 
@@ -191,9 +123,7 @@ class VisionThread(threading.Thread):
             smaller_im=cv.CreateImage((im.width/4, im.height/4), cv.IPL_DEPTH_8U, 3)
             cv.PyrDown(small_im, smaller_im);
             
-            #im=im.filter(GaussianBlur(1))
-            #im.thumbnail((150, 150), Image.ANTIALIAS)
-            colors=image_to_color(smaller_im)
+            colors=convert_to_colors(smaller_im)
             
             self.closest_ball=find_closest_ball(self.cam, colors)
             print self.closest_ball
