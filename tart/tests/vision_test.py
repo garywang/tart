@@ -1,5 +1,5 @@
 import cv, time, sys
-sys.path.append("/home/maslab-team-5/Maslab/tart/")
+sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
 from tart.sensors import camera, vision
 
 if __name__=="__main__":

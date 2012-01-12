@@ -1,5 +1,5 @@
 import time, sys
-sys.path.append("/home/maslab-team-5/Maslab/tart/")
+sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
 from tart.sensors.mouse import Mouse
 
 if __name__=="__main__":
