@@ -1,9 +1,6 @@
-from PIL import Image, ImageFilter
 from collections import deque
-import math
-import time
-import threading
-import cv
+import math, time, threading, cv, multiprocessing
+from tart.sensors.camera import WebCam
 
 
 #Colors
@@ -95,48 +92,100 @@ def find_blobs(im, color=None, reverse=False):
     return
 
 
-
 class VisionThread(threading.Thread):
-    def __init__(self, cam):
+    def __init__(self, info, debug=False):
         threading.Thread.__init__(self)
-        self.cam=cam
+        parent_conn, child_conn = multiprocessing.Pipe()
+        self.pipe=parent_conn
+        #self.cam=cam
+        self.proc=VisionProc(info, child_conn, debug)
         self.running=False
     
     def run(self):
         self.running=True
+        self.proc.start()
         while self.running:
-            im=self.cam.get_image()
-            small_im=cv.CreateImage((im.width/2, im.height/2), cv.IPL_DEPTH_8U, 3)
-            cv.PyrDown(im, small_im);
-            smaller_im=cv.CreateImage((im.width/4, im.height/4), cv.IPL_DEPTH_8U, 3)
-            cv.PyrDown(small_im, smaller_im);
-            smallerer_im=cv.CreateImage((im.width/8, im.height/8), cv.IPL_DEPTH_8U, 3)
-            cv.PyrDown(smaller_im, smallerer_im);
-            
-            colors=convert_to_colors(smallerer_im)
-            
-            self.closest_ball=self.find_closest_ball(colors)
-            print self.closest_ball
-            self.colors=colors
-            
-            time.sleep(0)
+            self.pipe.send(True)
+            while self.running and not self.pipe.poll(1):
+                pass
+            if not self.running:
+                break
+            data=self.pipe.recv()
+            print data
+            self.closest_ball=data["closest_ball"]
+        print "foo"
+        if self.proc.is_alive():
+            self.pipe.send(False)
     
     def stop(self):
         self.running=False
-        self.cam.stop()
+    
+
+class VisionProc(multiprocessing.Process):
+    def __init__(self, cam_info, pipe, debug=False):
+        multiprocessing.Process.__init__(self)
+        self.cam_info=cam_info
+        self.cam=WebCam(info=cam_info)
+        self.pipe=pipe
+        self.debug=debug
+        if self.debug:
+            self.debug_thread=DebugThread(self)
+    
+    def run(self):
+        if self.debug:
+            self.debug_thread.start()
+        try:
+            while self.pipe.recv() == True:
+                im=self.cam.get_image()
+                small_im=cv.CreateImage((im.width/2, im.height/2), cv.IPL_DEPTH_8U, 3)
+                cv.PyrDown(im, small_im);
+                smaller_im=cv.CreateImage((im.width/4, im.height/4), cv.IPL_DEPTH_8U, 3)
+                cv.PyrDown(small_im, smaller_im);
+                smallerer_im=cv.CreateImage((im.width/8, im.height/8), cv.IPL_DEPTH_8U, 3)
+                cv.PyrDown(smaller_im, smallerer_im);
+                
+                colors=convert_to_colors(smallerer_im)
+                
+                closest_ball=self.find_closest_ball(colors)
+                
+                self.pipe.send({"closest_ball": closest_ball})
+                self.colors=colors
+                
+                #time.sleep(0.01)
+        except KeyboardInterrupt:
+            pass
+        finally:
+            if self.debug:
+                self.debug_thread.stop()
+            self.cam.stop()
     
     def find_closest_ball(self, im):
         for b in find_blobs(im, color=RED, reverse=True):
             if self.is_ball(b, im):
-                return self.cam.info.get_vector(b[0], im)
+                return self.cam_info.get_vector(b[0], im)
         return None
     
     def is_ball(self, blob, im):
         """Check if a list of pixels is a ball"""
-        size=self.cam.info.get_pixel_size(blob[0], im)*len(blob)
+        size=self.cam_info.get_pixel_size(blob[0], im)*len(blob)
         return size>15 and size<45
 
-
+class DebugThread(threading.Thread):
+    
+    def __init__(self, proc):
+        threading.Thread.__init__(self)
+        self.proc=proc
+        self.running=False
+    
+    def run(self):
+        self.running=True
+        time.sleep(0.2)
+        while self.running:
+            show_image(convert_to_image(self.proc.colors))
+            time.sleep(0.05)
+    
+    def stop(self):
+        self.running=False
 
 
 def show_image(im, name="foo", num=10):

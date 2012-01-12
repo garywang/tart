@@ -1,17 +1,14 @@
 import cv, time, sys
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
-from tart.sensors import camera, vision
+from tart.sensors import camera, vision, trig
 
 if __name__=="__main__":
     try:
-        cam=camera.WebCam()
-        vt=vision.VisionThread(cam)
+        #cam=camera.WebCam()
+        info=trig.CameraInfo(cam_height=29., height_angle=0.70, width_angle=0.93, min_dist=28.)
+        vt=vision.VisionThread(info, debug=True)
         vt.start()
-        time.sleep(1)
-        while True:
-            cv.ShowImage("asdf", vision.convert_to_image(vt.colors))
-            cv.WaitKey(10)
-            time.sleep(0.05)
+        time.sleep(100)
     except KeyboardInterrupt:
         print "Ending Program"
     

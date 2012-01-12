@@ -34,10 +34,14 @@ class RealCamera(Camera):
         self.info=info
     
     def get_image(self):
-        return cv.QueryFrame(self.capture)
+        cv.GrabFrame(self.capture)
+        return cv.RetrieveFrame(self.capture)
     
     def update(self):
         cv.GrabFrame(self.capture)
+    
+    def stop(self):
+        del(self.capture)
 
 class WrapperCamera(threading.Thread, Camera):
     """Continuously call get_image of wrapped camera, return latest result"""
@@ -46,24 +50,16 @@ class WrapperCamera(threading.Thread, Camera):
         threading.Thread.__init__(self)
         self.cam=cam
         self.info=cam.info
-        self.lock=threading.Lock()
         self.start()
     
     def run(self):
         self.running=True
         while self.running:
-            #self.lock.acquire()
-            #self.image=self.cam.get_image()
             self.cam.update()
-            time.sleep(0.1)
-            #self.lock.release()
+            time.sleep(0.01)
+        self.cam.stop()
     
     def get_image(self):
-        #self.lock.acquire()
-        #self.image=self.cam.get_image()
-        #im=cv.CreateImage((self.image.width, self.image.height), cv.IPL_DEPTH_8U, 3)
-        #cv.Copy(self.image, im)
-        #self.lock.release()
         return self.cam.get_image()
     
     def stop(self):
@@ -72,8 +68,11 @@ class WrapperCamera(threading.Thread, Camera):
 class WebCam(Camera):
     """Our webcam"""
     
-    def __init__(self, wrapped=True):
-        self.info=CameraInfo(cam_height=29., height_angle=0.70, width_angle=0.93, min_dist=28.)
+    def __init__(self, wrapped=True, info=None):
+        if info is None:
+            self.info=CameraInfo(cam_height=29., height_angle=0.70, width_angle=0.93, min_dist=28.)
+        else:
+            self.info=info
         rc=RealCamera(1, self.info)
         if(wrapped):
             self.cam=WrapperCamera(rc)
