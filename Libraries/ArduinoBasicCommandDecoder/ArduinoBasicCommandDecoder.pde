@@ -7,7 +7,8 @@
 #define rstPin 5
 #define servoChar 'S'
 #define analogChar 'A'
-#define motorChar 'M'
+#define motorForwardChar 'M'
+#define motorReverseChar 'R'
 #define digitalChar 'D'
 #define commandLen 6
 
@@ -53,8 +54,12 @@ void loop()
     
       //If it's a motor command:
       //M[motor number][val]
-      case motorChar:
-        moveMotor();
+      case motorForwardChar:
+        moveMotor(1);
+        break;
+      
+      case motorReverseChar:
+        moveMotor(-1);
         break;
     
       //If it's a digital data request:
@@ -73,46 +78,46 @@ void moveServo(){
   int angle = getData(3);
   servo.attach(port);
   servo.write(angle);
-  Serial.println("000000");
-  delay(10);
+  Serial.println("");
 }
 //----------------
-void moveMotor(){      
+void moveMotor(int dir){      
   int num = getData(1);
   int val = getData(3);
       
-  if (num==0){
-    if (val > 200) {
-      motor.motor0Reverse(val-200);
-    }
-    else {
-      motor.motor0Forward(val);
-    }
+  if (num==0 && dir==1){
+    motor.motor0Forward(val);
   }
-  else if (num==1){
-    if (val > 200) {
-      motor.motor1Reverse(val-200);
-    }
-    else {
-      motor.motor1Forward(val);
-    }
+  else if (num==1 && dir==1){
+    motor.motor1Forward(val);
   }
-  Serial.println(000010);
-  delay(10);
+  else if (num==0 && dir==-1){
+    motor.motor0Reverse(val);
+  }
+  else if (num==1 && dir==-1){
+    motor.motor1Reverse(val);
+  }
+  Serial.println("");
 }
 //---------------
 void getAnalog(){
   int port = getData(2);
   int analogData = analogRead(port);
+
+  Serial.print("A ");
+  Serial.print(port);
+  Serial.print(" ");
   Serial.println(analogData);
-  delay(10);
 }
 //---------------
 void getDigital(){
   int port = getData(2);
   int digitalData = digitalRead(port);
+  
+  Serial.print("D ");
+  Serial.print(port);
+  Serial.print(" ");
   Serial.println(digitalData);
-  delay(10);
 }
 //----------------
 int getData(int len)
