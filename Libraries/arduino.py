@@ -139,7 +139,7 @@ class Motor:
             command ="M%(num)01d%(val)03d" %{'num': self.motorNum, 'val':val}
         if val<0:
             command ="R%(num)01d%(val)03d" %{'num': self.motorNum, 'val':abs(val)}
-        self.arduino.addCommand(command, self.ID, True)
+        self.arduino.addCommand(command, self.ID, False)
 
 ###############Digital Sensor Class###############
 class DigitalSensor:
