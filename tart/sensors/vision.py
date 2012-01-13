@@ -13,19 +13,12 @@ GREEN=6         #bin
 GRAY=0          #everything else
 
 def read_color_data():
-    print "Reading color data..."
     f=open("/home/maslab-team-5/Maslab/tart/tart/sensors/colors.dat", "r")
     global color_arr
-    color_arr=numpy.empty((256, 256, 256), dtype=numpy.int_)
-    for r in xrange(256):
-        print str(r)+"/255"
-        for g in xrange(256):
-            for b in xrange(256):
-                color_arr[r, g, b]=int(f.read(1))
+    color_arr=numpy.load(f)
     f.close()
-    print "Done!"
 
-#read_color_data()
+read_color_data()
 
 def get_rgb_from_color(color):
     if color==RED:

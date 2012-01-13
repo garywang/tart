@@ -1,13 +1,31 @@
-import numpy, cv, threading, sys, time
+import numpy, cv, threading, sys, time, pickle
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
 from tart.sensors import camera, vision
 
 def get_hsv_from_rgb(rgb):
-    r, g, b=rgb
-    im=cv.CreateImage((1, 1), cv.IPL_DEPTH_32F, 3)
-    im[0, 0]=(r/255., g/255., b/255.)
-    cv.CvtColor(im, im, cv.CV_RGB2HSV)
-    return im[0,0]
+    r, g, b=rgb[0]/255., rgb[1]/255., rgb[2]/255.
+    
+    v=max(r, g, b)
+    delta=v-min(r, g, b)
+    
+    if v==0:
+        return (0, 0, 0)
+    
+    s=delta/v
+    
+    if delta==0:
+        h=0
+    elif r==v:
+        h=(g-b)/delta
+    elif g==v:
+        h=2+(b-r)/delta
+    else:
+        h=4+(r-g)/delta
+    
+    if h<0:
+        h+=6
+    
+    return (h*60, s, v)
 
 #Colors
 RED=1           #ball
@@ -82,16 +100,24 @@ def calibrate():
     global thr
     thr=ShowImageThread(cam)
     thr.start()
+    print "Type done() when done"
 
 def done():
     thr.stop()
-    f=open("/home/maslab-team-5/Maslab/tart/tart/sensors/colors.dat", "w")
+    color_arr=numpy.empty((256, 256, 256), dtype=numpy.int8)
     for r in xrange(256):
         for g in xrange(256):
             for b in xrange(256):
-                f.write(str(get_color_from_hsv(get_hsv_from_rgb((r, g, b)))))
+                color_arr[r, g, b]=get_color_from_hsv(get_hsv_from_rgb((b, g, r)))
         print r
+    f=open("/home/maslab-team-5/Maslab/tart/tart/sensors/colors.dat", "w")
+    numpy.save(f, color_arr)
     f.close()
-    
+    exit()
+
+def cancel():
+    thr.stop()
+    exit()
+
 if __name__=="__main__":
     calibrate()
