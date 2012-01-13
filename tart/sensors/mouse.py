@@ -9,6 +9,7 @@ class Mouse(threading.Thread):
         self.sumx=0
         self.sumy=0
         self.d=deque()
+        self.lock=threading.Lock()
         self.interval=0.04
         self.start()
     
@@ -27,11 +28,13 @@ class Mouse(threading.Thread):
             self.pos=(self.pos[0]+x, self.pos[1]+y)
     
     def get_speed(self):
+        self.lock.acquire()
         t=time.time()
         while len(self.d)>0 and t-self.d[0][0]>self.interval:
             self.sumx-=self.d[0][1]
             self.sumy-=self.d[0][2]
             self.d.popleft()
+        self.lock.release()
         return (self.sumx/self.interval, self.sumy/self.interval)
     
     def get_pos(self):
@@ -52,7 +55,7 @@ class TwoMice:
         trans1=y1
         trans2=y2
         angle1=-x1-y2
-        angle2=-x2-y1
+        angle2=-x2+y1
         return ((trans1, trans2), (angle1, angle2))
     
     def get_speed(self):
