@@ -93,11 +93,10 @@ def find_blobs(im, color=None, reverse=False):
 
 
 class VisionThread(threading.Thread):
-    def __init__(self, info, debug=False):
+    def __init__(self, info=None, debug=False):
         threading.Thread.__init__(self)
         parent_conn, child_conn = multiprocessing.Pipe()
         self.pipe=parent_conn
-        #self.cam=cam
         self.proc=VisionProc(info, child_conn, debug)
         self.running=False
     
@@ -124,7 +123,6 @@ class VisionThread(threading.Thread):
 class VisionProc(multiprocessing.Process):
     def __init__(self, cam_info, pipe, debug=False):
         multiprocessing.Process.__init__(self)
-        self.cam_info=cam_info
         self.cam=WebCam(info=cam_info)
         self.pipe=pipe
         self.debug=debug
@@ -162,12 +160,12 @@ class VisionProc(multiprocessing.Process):
     def find_closest_ball(self, im):
         for b in find_blobs(im, color=RED, reverse=True):
             if self.is_ball(b, im):
-                return self.cam_info.get_vector(b[0], im)
+                return self.cam.info.get_vector(b[0], im)
         return None
     
     def is_ball(self, blob, im):
         """Check if a list of pixels is a ball"""
-        size=self.cam_info.get_pixel_size(blob[0], im)*len(blob)
+        size=self.cam.info.get_pixel_size(blob[0], im)*len(blob)
         return size>15 and size<45
 
 class DebugThread(threading.Thread):
