@@ -1,5 +1,5 @@
 from collections import deque
-import math, time, threading, cv, multiprocessing
+import math, time, threading, cv, multiprocessing, numpy
 from tart.sensors.camera import WebCam
 
 
@@ -12,18 +12,20 @@ PURPLE=5        #5-point line
 GREEN=6         #bin
 GRAY=0          #everything else
 
-def get_color_from_hsv(hsv):
-    h, s, v=hsv
-    if s<0.35 and v>0.7:
-        return WHITE
-    elif s<0.4 or v<0.1:
-        return GRAY
-    elif h>340 or h<20:
-        return RED
-    elif h<260 and h>170:
-        return BLUE
-    else:
-        return GRAY
+def read_color_data():
+    print "Reading color data..."
+    f=open("/home/maslab-team-5/Maslab/tart/tart/sensors/colors.dat", "r")
+    global color_arr
+    color_arr=numpy.empty((256, 256, 256), dtype=numpy.int_)
+    for r in xrange(256):
+        print str(r)+"/255"
+        for g in xrange(256):
+            for b in xrange(256):
+                color_arr[r, g, b]=int(f.read(1))
+    f.close()
+    print "Done!"
+
+#read_color_data()
 
 def get_rgb_from_color(color):
     if color==RED:
@@ -36,13 +38,11 @@ def get_rgb_from_color(color):
         return (0, 0, 0)
 
 def convert_to_colors(im):
-    hsv=cv.CreateImage((im.width, im.height), cv.IPL_DEPTH_32F, 3)
-    cv.ConvertScale(im, hsv, scale=1/255.)
-    cv.CvtColor(hsv, hsv, cv.CV_BGR2HSV)
+    global color_arr
     colors=cv.CreateImage((im.width, im.height), cv.IPL_DEPTH_8U, 1)
-    for i in range(im.height):
-        for j in range(im.width):
-            colors[i, j]=get_color_from_hsv(hsv[i, j])
+    for i in xrange(im.height):
+        for j in xrange(im.width):
+            colors[i, j]=color_arr[im[i, j]]
     return colors
     
 def convert_to_image(colors):
@@ -118,18 +118,19 @@ class VisionThread(threading.Thread):
     
     def stop(self):
         self.running=False
-    
 
 class VisionProc(multiprocessing.Process):
     def __init__(self, cam_info, pipe, debug=False):
         multiprocessing.Process.__init__(self)
-        self.cam=WebCam(info=cam_info)
+        self.cam_info=cam_info
         self.pipe=pipe
         self.debug=debug
         if self.debug:
             self.debug_thread=DebugThread(self)
     
     def run(self):
+        read_color_data()
+        self.cam=WebCam(self.cam_info)
         if self.debug:
             self.debug_thread.start()
         try:
