@@ -82,7 +82,12 @@ class Arduino(threading.Thread):
             fromArd = self.port.readline().strip().split(" ")
             if len(fromArd)==3: 
                 #print "{0}:{1}".format(fromArd[1],fromArd[2])
-                self.responseDict[int(fromArd[1])]= fromArd[2]
+                ID=int(fromArd[1])
+                if fromArd[0]=='A':
+                    ID="A{0}".format(ID)
+                elif fromArd[0]=='D':
+                    ID="D{0}".format(ID)
+                self.responseDict[ID]= fromArd[2]
             time.sleep(0)
 
     def queueHandler(self):
@@ -113,11 +118,11 @@ class Servo:
 class AnalogSensor:
     def __init__(self, _arduino, _port):
         self.arduino = _arduino
-        self.ID = _port
-        self.ID = "A{0}".format(num)
+        self.port = _port
+        self.ID = "A{0}".format(self.port)
 
     def getValue(self): #Returns a voltage value
-        command ="A%(port)02d" %{'port': self.ID}
+        command ="A%(port)02d" %{'port': self.port}
         value = self.arduino.addCommand(command, self.ID, True)
         if not value=='':
             voltageVal = int(value)*5.0/1023 #Converts the signal to a voltage
@@ -145,11 +150,11 @@ class Motor:
 class DigitalSensor:
     def __init__(self, _arduino, _port):
         self.arduino = _arduino
-        self.ID = _port
-        self.ID = "D{0}".format(_num)
+        self.port = _port
+        self.ID = "D{0}".format(_port)
 
     def getValue(self): #Returns a voltage value
-        command ="D%(port)02d" %{'port': self.ID}
+        command ="D%(port)02d" %{'port': self.port}
         value = self.arduino.addCommand(command, self.ID, True)
         if not value=='':
             val = int(value)
