@@ -186,7 +186,7 @@ class DebugThread(threading.Thread):
         self.running=False
 
 
-def show_image(im, name="foo", num=10):
+def show_image(im, name="foo", num=1):
     for i in range(num):
         cv.ShowImage(name, im)
         cv.WaitKey(10)
