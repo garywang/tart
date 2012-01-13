@@ -7,7 +7,8 @@ if __name__=="__main__":
         #cam=camera.WebCam()
         vt=vision.VisionThread(debug=True)
         vt.start()
-        time.sleep(100)
+        while True:
+            time.sleep(100)
     except KeyboardInterrupt:
         print "Ending Program"
     
