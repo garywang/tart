@@ -13,10 +13,14 @@ GREEN=6         #bin
 GRAY=0          #everything else
 
 def read_color_data():
-    f=open("/home/maslab-team-5/Maslab/tart/tart/sensors/colors.dat", "r")
-    global color_arr
-    color_arr=numpy.load(f)
-    f.close()
+    try:
+        f=open("/home/maslab-team-5/Maslab/tart/tart/sensors/colors.dat", "r")
+        global color_arr
+        color_arr=numpy.load(f)
+        f.close()
+    except IOError:
+        print "Unable to read colors.dat"
+        print "Run color calibration!"
 
 read_color_data()
 
@@ -123,7 +127,7 @@ class VisionProc(multiprocessing.Process):
     
     def run(self):
         read_color_data()
-        self.cam=WebCam(self.cam_info)
+        self.cam=WebCam(info=self.cam_info)
         if self.debug:
             self.debug_thread.start()
         try:
@@ -171,7 +175,7 @@ class DebugThread(threading.Thread):
     
     def run(self):
         self.running=True
-        time.sleep(0.2)
+        time.sleep(1)
         while self.running:
             show_image(convert_to_image(self.proc.colors))
             time.sleep(0.05)
