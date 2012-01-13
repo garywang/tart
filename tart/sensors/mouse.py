@@ -39,3 +39,28 @@ class Mouse(threading.Thread):
     
     def stop(self):
         self.running=False
+
+class TwoMice:
+    
+    def __init__(self, num1, num2):
+        self.m1=Mouse(num1)
+        self.m2=Mouse(num2)
+    
+    def combine(self, one, two):
+        x1, y1=one
+        x2, y2=two
+        trans1=y1
+        trans2=y2
+        angle1=-x1-y2
+        angle2=-x2-y1
+        return ((trans1, trans2), (angle1, angle2))
+    
+    def get_speed(self):
+        return self.combine(self.m1.get_speed(), self.m2.get_speed())
+    
+    def get_pos(self):
+        return self.combine(self.m1.get_pos(), self.m2.get_pos())
+    
+    def stop(self):
+        self.m1.stop()
+        self.m2.stop()
