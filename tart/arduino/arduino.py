@@ -130,30 +130,18 @@ class DigitalSensor:
         value = self.arduino.getResponse(self.ID)
         return int(value)
 
-if __name__ == "__main__":
-    ard = ArduinoThread()
-    ard.start()
-    motor = Motor(ard, 0)
-    motor.setValue(127)
-    print 'Sensor: ' + bump.getValue()
-    while bump.getValue() == 0:
-        print 'Sensor:', bump.getValue()
-        time.sleep(0.1)
-    print 'Bump'
-    ard.stop()
-    
-    
-
 
 if __name__=="__main__":
     try:
         ard = ArduinoThread()
-        motor = motor.Motor(ard,0)
+        #motor = Motor(ard,0)
+        sensor = AnalogSensor(ard, 3)
 
         ard.start()
         ard.waitReady()
 
-        motor.setValue(127)
+        #motor.setValue(127)
+        print sensor.getValue()
         time.sleep(1)
 
         ard.close()
