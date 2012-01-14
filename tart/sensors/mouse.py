@@ -52,6 +52,8 @@ class OdometryThread(threading.Thread):
     
     def run(self):
         self.running=True
+        self.m1.get_delta()
+        self.m2.get_delta()
         while self.running:
             x1, y1=self.m1.get_delta()
             x2, y2=self.m2.get_delta()
