@@ -1,4 +1,4 @@
--#include <Servo.h>
+#include <Servo.h>
 #include <CompactQik2s9v1.h>
 #include <NewSoftSerial.h>
 
@@ -78,7 +78,7 @@ void moveServo(){
 //----------------
 void moveMotor(){      
   int num = getData(1);
-  int sign = getData(1)
+  int sign = getData(1);
   int val = getData(3);
       
   if (num==0 && sign=='+'){
