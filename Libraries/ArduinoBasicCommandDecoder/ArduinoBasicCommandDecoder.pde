@@ -73,7 +73,7 @@ void moveServo(){
   int angle = getData(3);
   servo.attach(port);
   servo.write(angle);
-  Serial.println("");
+  Serial.println(0);
 }
 //----------------
 void moveMotor(){      
@@ -93,16 +93,13 @@ void moveMotor(){
   else if (num==1 && sign=='-'){
     motor.motor1Reverse(val);
   }
-  Serial.println("");
+  Serial.println(0);
 }
 //---------------
 void getAnalog(){
   int port = getData(2);
   int analogData = analogRead(port);
 
-  Serial.print(analogChar);
-  Serial.print(port);
-  Serial.print(" ");
   Serial.println(analogData);
 }
 //---------------
@@ -110,9 +107,6 @@ void getDigital(){
   int port = getData(2);
   int digitalData = digitalRead(port);
   
-  Serial.print(digitalChar);
-  Serial.print(port);
-  Serial.print(" ");
   Serial.println(digitalData);
 }
 //----------------
@@ -122,8 +116,6 @@ int getData(int len)
   char buffer[len+1];
   int received = 0, returnInt;
   
-  while (Serial.available()<len)
-    delay(1);
   for (int i = 0; i<len; i++)
   {
     buffer[received++] = Serial.read();
