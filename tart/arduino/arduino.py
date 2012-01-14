@@ -19,15 +19,14 @@ class ArduinoThread(threading.Thread):
                 print "commands:", self.commands
                 print "responses:", self.responses
                 time.sleep(0.01)
-            self.writeCommands()
-            self.readResponses()
+            self.loopCommands()
             
         self.close()
     
     def connect(self):
         print "Connecting"
         try:
-            self.port = serial.Serial(port='/dev/ttyACM0', baudrate=9600, timeout=0)
+            self.port = serial.Serial(port='/dev/ttyACM0', baudrate=9600, timeout=1)
             time.sleep(2) # Allows the arduino to initialize
             self.port.flush()
         except serial.SerialException:
@@ -35,21 +34,17 @@ class ArduinoThread(threading.Thread):
             raise
         print "Connected"
     
-    def writeCommands(self):
+    def loopCommands(self):
         self.lock.acquire()
         for ID, command in self.commands.iteritems():
+            # write command
             self.port.write(command)
             time.sleep(0)
-        self.lock.release()
-        time.sleep(0)
-            
-    def readResponses(self):
-        for line in self.port.readlines():
-            response = line.strip().split(" ")
-            if len(response) == 2:
-                ID = response[0]
-                self.responses[ID] = response[1]
+            # block for response (don't flood the arduino with commands)
+            response = self.port.readline().strip()
+            self.responses[ID] = response
             time.sleep(0)
+        self.lock.release()
         time.sleep(0)
 
     def close(self):
