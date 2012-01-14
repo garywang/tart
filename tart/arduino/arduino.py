@@ -132,16 +132,17 @@ class DigitalSensor:
 if __name__=="__main__":
     try:
         ard = ArduinoThread(debug=True)
-        #motor = Motor(ard,0)
-        sensor = AnalogSensor(ard, 3)
+        #motor = Motor(ard, 0)
+        sensor = AnalogSensor(ard, 0)
 
         ard.start()
         success = ard.waitReady()
         if not success: thread.exit()
 
         #motor.setValue(127)
-        print sensor.getValue()
-        time.sleep(1)
+        for i in range(10):
+            print sensor.getValue()
+            time.sleep(0.1)
 
         ard.close()
         
