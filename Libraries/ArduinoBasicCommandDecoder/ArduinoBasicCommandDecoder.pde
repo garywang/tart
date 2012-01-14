@@ -122,6 +122,8 @@ int getData(int len)
   char buffer[len+1];
   int received = 0, returnInt;
   
+  while (Serial.available()<len)
+    delay(1);
   for (int i = 0; i<len; i++)
   {
     buffer[received++] = Serial.read();
