@@ -4,7 +4,7 @@ from tart.sensors.mouse import OdometryThread
 
 if __name__=="__main__":
     try:
-        mice=OdometryThread(1, 2, 3.2)
+        mice=OdometryThread(0, 1, 3.2)
         mice.start()
         while True:
             print mice.get_speed(), mice.get_pos()
