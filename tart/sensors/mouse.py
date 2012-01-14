@@ -20,8 +20,8 @@ class Mouse(threading.Thread):
             if ord(s[0])&32>0:
                 y-=256
             self.lock.acquire()
-            self.sumx+=x
-            self.sumy+=y
+            self.sumx+=x/160.
+            self.sumy+=y/160.
             self.lock.release()
     
     def get_delta(self):
