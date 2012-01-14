@@ -32,7 +32,7 @@ void loop()
   //char command[commandLen-1];
   
   if (Serial.available()>0){
-    delay(1);
+    //delay(10);
     
     //Get the mode
     char mode = Serial.read();
