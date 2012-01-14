@@ -1,10 +1,11 @@
 import time, sys
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
-from tart.sensors.mouse import TwoMice
+from tart.sensors.mouse import OdometryThread
 
 if __name__=="__main__":
     try:
-        mice=TwoMice(1, 2)
+        mice=OdometryThread(1, 2, 3.2*80)
+        mice.start()
         while True:
             print mice.get_speed(), mice.get_pos()
             time.sleep(0.01)
