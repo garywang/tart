@@ -1,36 +1,38 @@
-import serial, time, threading
+import serial, time, threading, thread
 
 class ArduinoThread(threading.Thread):
-    def __init__(self):
+    def __init__(self, debug=False):
         threading.Thread.__init__(self)
         self.commands = {}
         self.responses = {}
         self.lock = threading.Lock()
         self.port = None
         self.running = False
+        self.debug = debug
     
     def run(self):
         self.running = True
         self.connect()
         
-        while self.port.isOpen() and self.running:
-            #print "commands:", self.commands
+        while self.running and self.port.isOpen():
+            if self.debug:
+                print "commands:", self.commands
+                print "responses:", self.responses
+                time.sleep(0.01)
             self.writeCommands()
-            #print "responses:", self.responses
             self.readResponses()
             
         self.close()
     
     def connect(self):
         print "Connecting"
-        for i in range(2):
-            self.port = serial.Serial(port='/dev/ttyACM{0}'.format(i), baudrate=9600, timeout=0)
-            if self.port.isOpen(): break
-        else:
-            print "Arduino not connected"
-            return
-        time.sleep(2) # Allows the arduino to initialize
-        self.port.flush()
+        try:
+            self.port = serial.Serial(port='/dev/ttyACM0', baudrate=9600, timeout=0)
+            time.sleep(2) # Allows the arduino to initialize
+            self.port.flush()
+        except serial.SerialException:
+            self.stop()
+            raise
         print "Connected"
     
     def writeCommands(self):
@@ -56,7 +58,8 @@ class ArduinoThread(threading.Thread):
             self.port.close()
     
     def waitReady(self): # Wait until connected
-        while not self.port: time.sleep(0.001)
+        while self.running and not self.port: time.sleep(0.001)
+        return self.running
     
     def addCommand(self, ID, command, response):
         self.lock.acquire()
@@ -133,12 +136,13 @@ class DigitalSensor:
 
 if __name__=="__main__":
     try:
-        ard = ArduinoThread()
+        ard = ArduinoThread(debug=True)
         #motor = Motor(ard,0)
         sensor = AnalogSensor(ard, 3)
 
         ard.start()
-        ard.waitReady()
+        success = ard.waitReady()
+        if not success: thread.exit()
 
         #motor.setValue(127)
         print sensor.getValue()
