@@ -7,8 +7,7 @@ from tart.sensors import sensor
 if __name__=="__main__":
     try:
         ard = arduino.Arduino()
-        motor0 = motor.Motor(ard,0)
-        motor1 = motor.Motor(ard,1)
+        dt = drive.DimpleDrive(ard, 0, 1)
         switch = sensor.BumpSensor(ard,2)
 
         ard.start()
@@ -18,14 +17,12 @@ if __name__=="__main__":
             if switch.pressed():
                 print "Wall bumped"
                 break
-            motor0.setVal(127)
-            motor1.setVal(-127)
+            dt.drive(127, -127)
         
-        motor0.setVal(0)
-        motor1.setVal(127)
+        dt.drive(0, 127)
         time.sleep(1)
         
-        motor1.setVal(0)
+        dt.drive(0, 0)
 
         ard.close()
     #This is so that when you hit ctrl-C in the terminal, all the arduino threads close. You can do something similar with threads in your program.
