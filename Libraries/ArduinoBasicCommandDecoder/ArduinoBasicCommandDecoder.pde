@@ -1,4 +1,4 @@
-#include <Servo.h>
+-#include <Servo.h>
 #include <CompactQik2s9v1.h>
 #include <NewSoftSerial.h>
 
@@ -7,8 +7,7 @@
 #define rstPin 5
 #define servoChar 'S'
 #define analogChar 'A'
-#define motorForwardChar 'M'
-#define motorReverseChar 'R'
+#define motorChar 'M'
 #define digitalChar 'D'
 #define commandLen 6
 
@@ -33,7 +32,7 @@ void loop()
   //char command[commandLen-1];
   
   if (Serial.available()>0){
-    delay(10);
+    delay(1);
     
     //Get the mode
     char mode = Serial.read();
@@ -53,13 +52,9 @@ void loop()
         break;
     
       //If it's a motor command:
-      //M[motor number][val]
-      case motorForwardChar:
-        moveMotor(1);
-        break;
-      
-      case motorReverseChar:
-        moveMotor(-1);
+      //M[motor number][+/-][val]
+      case motorChar:
+        moveMotor();
         break;
     
       //If it's a digital data request:
@@ -81,20 +76,21 @@ void moveServo(){
   Serial.println("");
 }
 //----------------
-void moveMotor(int dir){      
+void moveMotor(){      
   int num = getData(1);
+  int sign = getData(1)
   int val = getData(3);
       
-  if (num==0 && dir==1){
+  if (num==0 && sign=='+'){
     motor.motor0Forward(val);
   }
-  else if (num==1 && dir==1){
+  else if (num==1 && sign=='+'){
     motor.motor1Forward(val);
   }
-  else if (num==0 && dir==-1){
+  else if (num==0 && sign=='-'){
     motor.motor0Reverse(val);
   }
-  else if (num==1 && dir==-1){
+  else if (num==1 && sign=='-'){
     motor.motor1Reverse(val);
   }
   Serial.println("");
@@ -104,7 +100,7 @@ void getAnalog(){
   int port = getData(2);
   int analogData = analogRead(port);
 
-  Serial.print("A ");
+  Serial.print(analogChar);
   Serial.print(port);
   Serial.print(" ");
   Serial.println(analogData);
@@ -114,7 +110,7 @@ void getDigital(){
   int port = getData(2);
   int digitalData = digitalRead(port);
   
-  Serial.print("D ");
+  Serial.print(digitalChar);
   Serial.print(port);
   Serial.print(" ");
   Serial.println(digitalData);
