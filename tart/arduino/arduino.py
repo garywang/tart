@@ -55,6 +55,9 @@ class ArduinoThread(threading.Thread):
             self.port.flush()
             self.port.close()
     
+    def waitReady(self): # Wait until connected
+        while not self.port: time.sleep(0.001)
+    
     def addCommand(self, ID, command, response):
         self.lock.acquire()
         self.commands[ID] = command
@@ -138,3 +141,26 @@ if __name__ == "__main__":
         time.sleep(0.1)
     print 'Bump'
     ard.stop()
+    
+    
+
+
+if __name__=="__main__":
+    try:
+        ard = ArduinoThread()
+        motor = motor.Motor(ard,0)
+
+        ard.start()
+        ard.waitReady()
+
+        motor.setValue(127)
+        time.sleep(1)
+
+        ard.close()
+        
+    #This is so that when you hit ctrl-C in the terminal, all the arduino threads close. You can do something similar with threads in your program.
+    except KeyboardInterrupt:
+        print "Ending Program"
+    
+    finally:
+        ard.stop()
