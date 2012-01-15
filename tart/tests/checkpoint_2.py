@@ -11,7 +11,6 @@ if __name__=="__main__":
         switch = sensor.BumpSensor(ard,2)
 
         ard.start()
-        while not ard.portOpened: time.sleep(0.001) #Wait for the arduino to be ready, before sending commands
         
         for i in range(300):
             if switch.pressed():
@@ -24,7 +23,7 @@ if __name__=="__main__":
         
         dt.drive(0, 0)
 
-        ard.close()
+        ard.stop()
     #This is so that when you hit ctrl-C in the terminal, all the arduino threads close. You can do something similar with threads in your program.
     except KeyboardInterrupt:
         print "Ending Program"

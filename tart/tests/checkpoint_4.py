@@ -13,7 +13,6 @@ if __name__=="__main__":
         vis=vision.VisionThread()
 
         ard.start()
-        while not ard.portOpened: time.sleep(0.001) #Wait for the arduino to be ready, before sending commands
         
         vis.start()
         time.sleep(1)
@@ -43,4 +42,4 @@ if __name__=="__main__":
     
     finally:
         vis.stop()
-        ard.killReceived=True
+        ard.stop()
