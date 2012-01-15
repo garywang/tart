@@ -5,7 +5,7 @@ from tart.actuators import drive
 
 if __name__=="__main__":
     try:
-        ard = arduino.Arduino()
+        ard = arduino.Arduino(debug=True)
         dt = drive.SimpleDrive(ard, 0, 1)
 
         ard.start()
