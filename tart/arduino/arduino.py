@@ -86,6 +86,8 @@ class ArduinoThread(threading.Thread):
         self.running = False
     
 
+Arduino=ArduinoThread
+
 class Servo:
     def __init__(self, _arduino, _port):
         self.arduino = _arduino
