@@ -35,16 +35,15 @@ class ArduinoThread(threading.Thread):
         print "Connected"
     
     def loopCommands(self):
-        self.lock.acquire()
         for ID, command in self.commands.iteritems():
+            self.lock.acquire()
             # write command
             self.port.write(command)
-            time.sleep(0)
             # block for response (don't flood the arduino with commands)
             response = self.port.readline().strip()
             self.responses[ID] = response
+            self.lock.release()
             time.sleep(0)
-        self.lock.release()
         time.sleep(0)
 
     def close(self):
@@ -85,7 +84,7 @@ class ArduinoThread(threading.Thread):
     
     def stop(self):
         self.running = False
-            
+    
 
 class Servo:
     def __init__(self, _arduino, _port):
