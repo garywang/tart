@@ -1,6 +1,7 @@
 import serial, time, threading, thread
 
 class ArduinoThread(threading.Thread):
+    
     def __init__(self, debug=False):
         threading.Thread.__init__(self)
         self.commands = {}
@@ -18,8 +19,8 @@ class ArduinoThread(threading.Thread):
             if self.debug:
                 print "commands:", self.commands
                 print "responses:", self.responses
-                time.sleep(0.01)
             self.loopCommands()
+            time.sleep(0)
             
         self.close()
     
@@ -35,17 +36,21 @@ class ArduinoThread(threading.Thread):
         print "Connected"
     
     def loopCommands(self):
+        self.lock.acquire()
         for ID, command in self.commands.iteritems():
-            self.lock.acquire()
             # write command
             self.port.write(command)
+            if self.debug:
+                print "Sent: "+command
             # block for response (don't flood the arduino with commands)
             response = self.port.readline().strip()
             self.responses[ID] = response
-            self.lock.release()
+            if self.debug:
+                print "Received: "+response
             time.sleep(0)
-        time.sleep(0)
-
+        self.lock.release()
+    
+    #This should not be called while the thread is still running
     def close(self):
         if self.port.isOpen():
             self.port.flush()
