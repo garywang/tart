@@ -11,7 +11,7 @@ if __name__=="__main__":
         ard.start()
 
         dt.drive(127, -127)
-        time.sleep(1)
+        time.sleep(2)
 
         dt.drive(0, 0)
 
