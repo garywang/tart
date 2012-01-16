@@ -27,7 +27,7 @@ class ArduinoThread(threading.Thread):
     def connect(self):
         print "Connecting"
         try:
-            self.port = serial.Serial(port='/dev/ttyACM0', baudrate=9600, timeout=1)
+            self.port = serial.Serial(port='/dev/ttyACM2', baudrate=9600, timeout=1)
             time.sleep(2) # Allows the arduino to initialize
             self.port.flush()
         except serial.SerialException:

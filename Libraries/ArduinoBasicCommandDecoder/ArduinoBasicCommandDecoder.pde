@@ -23,13 +23,13 @@ NewSoftSerial mySerial[4] = {
     NewSoftSerial(rxPin1, txPin1),
     NewSoftSerial(rxPin2, txPin2),
     NewSoftSerial(rxPin3, txPin3)
-}
+};
 CompactQik2s9v1 mc[4] = {
     CompactQik2s9v1(&mySerial[0], rstPin),
     CompactQik2s9v1(&mySerial[1], rstPin),
     CompactQik2s9v1(&mySerial[2], rstPin),
     CompactQik2s9v1(&mySerial[3], rstPin)
-}
+};
 
 void setup()                    
 {
@@ -99,29 +99,6 @@ void moveMotor(){
   int num = getData(1);
   char sign = serialRead();
   int val = getData(3);
-<<<<<<< HEAD
-      
-  if (num==0 && sign=='+'){
-    motor.motor0Forward(val);
-    Serial.println(val);
-  }
-  else if (num==1 && sign=='+'){
-    motor.motor1Forward(val);
-    Serial.println(2);
-  }
-  else if (num==0 && sign=='-'){
-    motor.motor0Reverse(val);
-    Serial.println(3);
-  }
-  else if (num==1 && sign=='-'){
-    motor.motor1Reverse(val);
-    Serial.println(4);
-  }
-  else {
-    Serial.println(val);
-  }
- 
-=======
   
   if (controller >= 0 && controller < 4 && num >= 0 && num < 2) {
       CompactQik2s9v1 m = mc[controller];
