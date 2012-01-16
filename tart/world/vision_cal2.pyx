@@ -43,7 +43,7 @@ cdef numpy.int8_t BLACK=7        #val too low
 cdef numpy.int8_t OTHER=8        #unknown hue
 
 white_sat_max=0.35
-white_val_min=0.7
+white_val_min=0.65
 color_sat_min=0.4
 color_val_min=0.1
 
@@ -77,6 +77,12 @@ cdef numpy.int8_t get_color_from_hsv(hsv):
         return RED
     elif h<260 and h>170:
         return BLUE
+    elif h>35 and h<75:
+        return YELLOW
+    elif h>260 and h<330:
+        return PURPLE
+    elif h>90 and h<150:
+        return GREEN
     else:
         return OTHER
 
