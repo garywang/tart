@@ -27,7 +27,7 @@ class ArduinoThread(threading.Thread):
     def connect(self):
         print "Connecting"
         try:
-            self.port = serial.Serial(port='/dev/ttyACM0', baudrate=9600, timeout=1)
+            self.port = serial.Serial(port='/dev/ttyACM2', baudrate=9600, timeout=1)
             time.sleep(2) # Allows the arduino to initialize
             self.port.flush()
         except serial.SerialException:
@@ -104,9 +104,9 @@ class Servo:
         self.arduino.updateCommand(self.ID, command)
 
 class Motor:
-    def __init__(self, _arduino, _num):
+    def __init__(self, _arduino, _controller, _num):
         self.arduino = _arduino
-        self.ID = "M{num:01d}".format(num=_num)
+        self.ID = "M{controller:01d}{num:01d}".format(controller=_controller, num=_num)
         self.arduino.addCommand(self.ID, "", False)
 
     def setValue(self, value): # Value between -127 and 127
@@ -138,19 +138,17 @@ class DigitalSensor:
 if __name__=="__main__":
     try:
         ard = ArduinoThread(debug=True)
-        #motor = Motor(ard, 0)
-        sensor = AnalogSensor(ard, 0)
+        motor = Motor(ard, 1, 0)
+        #sensor = AnalogSensor(ard, 0)
 
         ard.start()
         success = ard.waitReady()
         if not success: thread.exit()
 
-        #motor.setValue(127)
-        for i in range(10):
-            print sensor.getValue()
+        motor.setValue(127)
+        for i in range(100):
+            #print sensor.getValue()
             time.sleep(0.1)
-
-        ard.close()
         
     #This is so that when you hit ctrl-C in the terminal, all the arduino threads close. You can do something similar with threads in your program.
     except KeyboardInterrupt:
