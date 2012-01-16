@@ -1,7 +1,7 @@
 import numpy, cv, threading, sys, time, pickle
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
 from tart.sensors import camera
-from tart.mapping import vision
+from tart.world import vision
 
 def get_hsv_from_rgb(rgb):
     r, g, b=rgb[0]/255., rgb[1]/255., rgb[2]/255.
