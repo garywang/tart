@@ -18,9 +18,9 @@ class OmniDrive:
     """Omnidirectional drive with 3 omniwheels. Assumes positive motor outputs go clockwise and positive angle goes clockwise"""
     
     def __init__(self, ard, numL, numR, numB):
-        self.motorL = arduino.Motor(ard, num1) # front left
-        self.motorR = arduino.Motor(ard, num2) # front right
-        self.motorB = arduino.Motor(ard, num3) # back wheel. note: motor controller only does 2 motors. have to fix on arduino side.
+        self.motorL = arduino.Motor(ard, numL) # front left
+        self.motorR = arduino.Motor(ard, numR) # front right
+        self.motorB = arduino.Motor(ard, numB) # back wheel. note: motor controller only does 2 motors. have to fix on arduino side.
     
     def setMotors(self, left, right, back):
         self.motorL.setValue(left)
