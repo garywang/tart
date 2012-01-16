@@ -2,8 +2,14 @@
 #include <CompactQik2s9v1.h>
 #include <NewSoftSerial.h>
 
-#define rxPin 19
-#define txPin 18
+#define rxPin 1
+#define txPin 0
+#define rxPin1 19
+#define txPin1 18
+#define rxPin2 17
+#define txPin2 16
+#define rxPin3 15
+#define txPin3 14
 #define rstPin 5
 #define servoChar 'S'
 #define analogChar 'A'
@@ -12,8 +18,18 @@
 #define commandLen 6
 
 Servo servo;
-NewSoftSerial mySerial = NewSoftSerial(rxPin, txPin);
-CompactQik2s9v1 motor = CompactQik2s9v1(&mySerial, rstPin);
+NewSoftSerial mySerial[4] = {
+    NewSoftSerial(rxPin, txPin),
+    NewSoftSerial(rxPin1, txPin1),
+    NewSoftSerial(rxPin2, txPin2),
+    NewSoftSerial(rxPin3, txPin3)
+}
+CompactQik2s9v1 mc[4] = {
+    CompactQik2s9v1(&mySerial[0], rstPin),
+    CompactQik2s9v1(&mySerial[1], rstPin),
+    CompactQik2s9v1(&mySerial[2], rstPin),
+    CompactQik2s9v1(&mySerial[3], rstPin)
+}
 
 void setup()                    
 {
@@ -21,10 +37,13 @@ void setup()
   delay(1000); //Wait for it to initialize
   Serial.flush();
   
-  mySerial.begin(9600);
-  motor.begin();
-  motor.stopBothMotors();
-  
+  for (int i = 0; i < 4; i++)
+  {
+    mySerial[i].begin(9600);
+    mc[i].begin();
+    mc[i].getError();
+    mc[i].stopBothMotors();
+  }
 }
 
 void loop()                      
@@ -76,24 +95,32 @@ void moveServo(){
   Serial.println(0);
 }
 //----------------
-void moveMotor(){      
+void moveMotor(){     
+  int controller = getData(1); 
   int num = getData(1);
   int sign = getData(1);
   int val = getData(3);
-      
-  if (num==0 && sign=='+'){
-    motor.motor0Forward(val);
+  
+  if (controller >= 0 && controller < 4 && num >= 0 && num < 2) {
+      CompactQik2s9v1 m = mc[controller];
+          
+      if (num==0 && sign=='+'){
+        m.motor0Forward(val);
+      }
+      else if (num==1 && sign=='+'){
+        m.motor1Forward(val);
+      }
+      else if (num==0 && sign=='-'){
+        m.motor0Reverse(val);
+      }
+      else if (num==1 && sign=='-'){
+        m.motor1Reverse(val);
+      }
+      Serial.println(0);
   }
-  else if (num==1 && sign=='+'){
-    motor.motor1Forward(val);
+  else {
+    Serial.println(8); // motor does not exist
   }
-  else if (num==0 && sign=='-'){
-    motor.motor0Reverse(val);
-  }
-  else if (num==1 && sign=='-'){
-    motor.motor1Reverse(val);
-  }
-  Serial.println(0);
 }
 //---------------
 void getAnalog(){

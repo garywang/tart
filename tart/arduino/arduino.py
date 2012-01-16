@@ -104,9 +104,9 @@ class Servo:
         self.arduino.updateCommand(self.ID, command)
 
 class Motor:
-    def __init__(self, _arduino, _num):
+    def __init__(self, _arduino, _controller, _num):
         self.arduino = _arduino
-        self.ID = "M{num:01d}".format(num=_num)
+        self.ID = "M{controller:01d}{num:01d}".format(controller=_controller, num=_num)
         self.arduino.addCommand(self.ID, "", False)
 
     def setValue(self, value): # Value between -127 and 127
