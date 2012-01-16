@@ -17,8 +17,8 @@ class ArduinoThread(threading.Thread):
         
         while self.running and self.port.isOpen():
             if self.debug:
-                print "commands:", self.commands
-                print "responses:", self.responses
+                print "Commands:", self.commands
+                print "Responses:", self.responses
             self.loopCommands()
             time.sleep(0)
             
@@ -41,12 +41,12 @@ class ArduinoThread(threading.Thread):
             # write command
             self.port.write(command)
             if self.debug:
-                print "Sent: "+command
+                print "Sent:", command
             # block for response (don't flood the arduino with commands)
             response = self.port.readline().strip()
             self.responses[ID] = response
             if self.debug:
-                print "Received: "+response
+                print "Received:", response
             time.sleep(0)
         self.lock.release()
     
