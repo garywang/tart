@@ -1,5 +1,6 @@
 import threading, time, math
 from collections import deque
+from tart.sensors.mouse import Mouse
 
 class OdometryThread(threading.Thread):
 

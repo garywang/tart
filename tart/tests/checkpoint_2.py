@@ -1,13 +1,13 @@
 import sys, time
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
 import arduino
-from tart.actuators import motor
+from tart.actuators import drive
 from tart.sensors import sensor
 
 if __name__=="__main__":
     try:
         ard = arduino.Arduino()
-        dt = drive.DimpleDrive(ard, 0, 1)
+        dt = drive.SimpleDrive(ard, 0, 1)
         switch = sensor.BumpSensor(ard,2)
 
         ard.start()

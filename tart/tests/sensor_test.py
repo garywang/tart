@@ -1,8 +1,6 @@
 import sys, time
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
 import arduino
-from tart.actuators import motor
-from tart.sensors import sensor
 
 if __name__=="__main__":
     try:

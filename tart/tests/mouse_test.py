@@ -1,6 +1,6 @@
 import time, sys
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
-from tart.sensors.mouse import OdometryThread
+from tart.mapping.odometry import OdometryThread
 
 if __name__=="__main__":
     try:
