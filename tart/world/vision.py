@@ -90,9 +90,10 @@ def find_blobs(im, color=None, reverse=False):
 
 
 class VisionThread(threading.Thread):
-    def __init__(self, info=None, debug=False):
+    def __init__(self, robot, info=None, debug=False):
         threading.Thread.__init__(self)
         parent_conn, child_conn = multiprocessing.Pipe()
+        self.robot = robot
         self.pipe=parent_conn
         self.proc=VisionProc(info, child_conn, debug)
         self.running=False
@@ -112,6 +113,9 @@ class VisionThread(threading.Thread):
         print "foo"
         if self.proc.is_alive():
             self.pipe.send(False)
+    
+    def get_closest_ball(self):
+        return self.closest_ball
     
     def stop(self):
         self.running=False

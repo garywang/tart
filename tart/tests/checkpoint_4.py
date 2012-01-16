@@ -19,7 +19,7 @@ if __name__=="__main__":
         time.sleep(1)
         
         while True:
-            coords=vis.closest_ball
+            coords=vis.get_closest_ball()
             if coords is None:
                 motor0.setVal(50)
                 motor1.setVal(50)
