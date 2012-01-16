@@ -15,6 +15,13 @@ Servo servo;
 NewSoftSerial mySerial = NewSoftSerial(rxPin, txPin);
 CompactQik2s9v1 motor = CompactQik2s9v1(&mySerial, rstPin);
 
+char serialRead()
+{
+  char in = -1;
+  while (in == -1) in = Serial.read();
+  return in;
+}
+
 void setup()                    
 {
   Serial.begin(9600);           // set up Serial library at 9600 bps
@@ -31,11 +38,10 @@ void loop()
 {
   //char command[commandLen-1];
   
-  if (Serial.available()>0){
     //delay(10);
     
     //Get the mode
-    char mode = Serial.read();
+    char mode = serialRead();
   
     switch (mode){
       
@@ -62,7 +68,7 @@ void loop()
       case digitalChar:
         getDigital();
         break;
-    }
+    
   }
   
 }
@@ -76,24 +82,31 @@ void moveServo(){
   Serial.println(0);
 }
 //----------------
-void moveMotor(){      
+void moveMotor(){
   int num = getData(1);
-  int sign = getData(1);
+  char sign = serialRead();
   int val = getData(3);
       
   if (num==0 && sign=='+'){
     motor.motor0Forward(val);
+    Serial.println(val);
   }
   else if (num==1 && sign=='+'){
     motor.motor1Forward(val);
+    Serial.println(2);
   }
   else if (num==0 && sign=='-'){
     motor.motor0Reverse(val);
+    Serial.println(3);
   }
   else if (num==1 && sign=='-'){
     motor.motor1Reverse(val);
+    Serial.println(4);
   }
-  Serial.println(0);
+  else {
+    Serial.println(val);
+  }
+ 
 }
 //---------------
 void getAnalog(){
@@ -118,7 +131,7 @@ int getData(int len)
   
   for (int i = 0; i<len; i++)
   {
-    buffer[received++] = Serial.read();
+    buffer[received++] = serialRead();
     buffer[received] = '\0';
     if (received >= (sizeof(buffer)-1))
     {

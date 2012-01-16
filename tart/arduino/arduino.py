@@ -138,16 +138,16 @@ class DigitalSensor:
 if __name__=="__main__":
     try:
         ard = ArduinoThread(debug=True)
-        #motor = Motor(ard, 0)
-        sensor = AnalogSensor(ard, 0)
+        motor = Motor(ard, 0)
+        #sensor = AnalogSensor(ard, 0)
 
         ard.start()
         success = ard.waitReady()
         if not success: thread.exit()
 
-        #motor.setValue(127)
-        for i in range(10):
-            print sensor.getValue()
+        motor.setValue(127)
+        for i in range(100):
+            #print sensor.getValue()
             time.sleep(0.1)
         
     #This is so that when you hit ctrl-C in the terminal, all the arduino threads close. You can do something similar with threads in your program.
