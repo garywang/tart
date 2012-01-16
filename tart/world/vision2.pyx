@@ -131,6 +131,7 @@ class VisionProc(multiprocessing.Process):
         self.cam_info=cam_info
         self.pipe=pipe
         self.debug=debug
+        self.colors=None
         if self.debug:
             self.debug_thread=DebugThread(self)
     
@@ -143,12 +144,12 @@ class VisionProc(multiprocessing.Process):
             while self.pipe.recv() == True:
                 t=time.time()
                 im=self.cam.get_image()
+                print "~"+str(time.time()-t)
+                t=time.time()
                 small_im=cv.CreateImage((im.width/2, im.height/2), cv.IPL_DEPTH_8U, 3)
                 cv.PyrDown(im, small_im);
                 smaller_im=cv.CreateImage((im.width/4, im.height/4), cv.IPL_DEPTH_8U, 3)
                 cv.PyrDown(small_im, smaller_im);
-                smallerer_im=cv.CreateImage((im.width/8, im.height/8), cv.IPL_DEPTH_8U, 3)
-                cv.PyrDown(smaller_im, smallerer_im);
                 
                 mat=numpy.asarray(cv.GetMat(smaller_im))
                 
@@ -195,7 +196,8 @@ class DebugThread(threading.Thread):
     
     def run(self):
         self.running=True
-        time.sleep(1)
+        while self.proc.colors is None:
+            time.sleep(0.01)
         while self.running:
             show_image(convert_to_image(self.proc.colors))
             time.sleep(0.05)
