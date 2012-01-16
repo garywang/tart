@@ -3,8 +3,8 @@ sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
 import arduino
 from tart.actuators import motor
 from tart.sensors import camera
-from tart.mapping import vision
-from tart.mapping.trig import CameraInfo
+from tart.world import vision
+from tart.world.trig import CameraInfo
 
 if __name__=="__main__":
     try:

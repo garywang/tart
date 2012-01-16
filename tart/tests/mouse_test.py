@@ -1,6 +1,6 @@
 import time, sys
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
-from tart.mapping.odometry import OdometryThread
+from tart.world.odometry import OdometryThread
 
 if __name__=="__main__":
     try:
