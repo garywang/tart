@@ -149,8 +149,6 @@ if __name__=="__main__":
         for i in range(10):
             print sensor.getValue()
             time.sleep(0.1)
-
-        ard.close()
         
     #This is so that when you hit ctrl-C in the terminal, all the arduino threads close. You can do something similar with threads in your program.
     except KeyboardInterrupt:

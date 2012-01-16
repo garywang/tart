@@ -11,12 +11,17 @@ class Cheesecake:
         self.vis = vision.VisionThread(self)
         #self.map = mapping.MappingThread(self) # not implemented. notes: arguments
         self.sm = state_machine.StateMachine(self)
-        self.drive = drive.SimpleDrive(self.ard, 0, 1)
+        self.dt = drive.OmniDrive(self.ard, 0, 1, 2)
     
     def start(self):
         ard.start()
         vis.start()
         sm.start()
+    
+    def stop(self):
+        ard.stop()
+        vis.stop()
+        sm.stop()
 
 if __name__ == "__main__":
     try:
@@ -27,4 +32,4 @@ if __name__ == "__main__":
         print "Ending Program"
     
     finally:
-        
+        bot.stop()

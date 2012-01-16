@@ -1,5 +1,5 @@
 import sys, time
-import threading
+import threading, thread
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
 import math
 
@@ -7,12 +7,19 @@ class StateMachine(threading.Thread):
     def __init__(self, robot):
         threading.Thread.__init__(self)
         self.robot = robot
+        self.running = False
         
     def run(self):
+        self.running = True
+        self.robot.ard.waitReady() # wait for arduino first
+        
         self.state = self.scan
-        while True:
+        while self.running:
             self.state = self.state()
             time.sleep(0)
+    
+    def stop(self):
+        self.running = False
     
     def scan(self):
         if self.robot.vis.get_closest_ball(): # sees a ball

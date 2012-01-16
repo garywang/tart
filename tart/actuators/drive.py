@@ -46,3 +46,19 @@ class OmniDrive:
             r = -127
         b = rotation
         self.setMotors(l, r, b)
+
+if __name__ == "__main__":
+    try:
+        ard = arduino.ArduinoThread()
+        dt = OmniDrive(ard, 0, 1, 2)
+
+        ard.start()
+        success = ard.waitReady()
+        
+        dt.rotate(50)
+        #dt.forward()
+        #dt.translate(50, 90)
+        time.sleep(5)
+        
+    finally:
+        ard.stop()
