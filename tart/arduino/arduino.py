@@ -138,7 +138,7 @@ class DigitalSensor:
 if __name__=="__main__":
     try:
         ard = ArduinoThread(debug=True)
-        motor = Motor(ard, 0)
+        motor = Motor(ard, 1, 0)
         #sensor = AnalogSensor(ard, 0)
 
         ard.start()

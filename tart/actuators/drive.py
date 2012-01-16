@@ -6,9 +6,9 @@ from math import radians, sin, cos, sqrt
 class SimpleDrive:
     """Simple drive class"""
     
-    def __init__(self, ard, numL, numR):
-        self.motorL = arduino.Motor(ard, numL)
-        self.motorR = arduino.Motor(ard, numR)
+    def __init__(self, ard, numL=0, numR=1):
+        self.motorL = arduino.Motor(ard, 1, numL)
+        self.motorR = arduino.Motor(ard, 1, numR)
     
     def drive(self, left, right):
         self.motorL.setValue(left)
@@ -17,10 +17,13 @@ class SimpleDrive:
 class OmniDrive:
     """Omnidirectional drive with 3 omniwheels. Assumes positive motor outputs go clockwise and positive angle goes clockwise"""
     
-    def __init__(self, ard, numL, numR, numB):
-        self.motorL = arduino.Motor(ard, numL) # front left
-        self.motorR = arduino.Motor(ard, numR) # front right
-        self.motorB = arduino.Motor(ard, numB) # back wheel. note: motor controller only does 2 motors. have to fix on arduino side.
+    def __init__(self, ard, motorL=(1,0), motorR=(1,1), motorB=(2,0)):
+        mcL, numL = motorL
+        mcR, numR = motorR
+        mcB, numB = motorB
+        self.motorL = arduino.Motor(ard, mcL, numL) # front left
+        self.motorR = arduino.Motor(ard, mcR, numR) # front right
+        self.motorB = arduino.Motor(ard, mcB, numB) # back wheel. note: motor controller only does 2 motors. have to fix on arduino side.
     
     def setMotors(self, left, right, back):
         self.motorL.setValue(left)
@@ -50,7 +53,7 @@ class OmniDrive:
 if __name__ == "__main__":
     try:
         ard = arduino.ArduinoThread()
-        dt = OmniDrive(ard, 0, 1, 2)
+        dt = OmniDrive(ard)
 
         ard.start()
         success = ard.waitReady()
