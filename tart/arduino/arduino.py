@@ -29,6 +29,9 @@ class ArduinoThread(threading.Thread):
         for i in range(3):
             try:
                 self.port = serial.Serial(port='/dev/ttyACM{0:01d}'.format(i), baudrate=9600, timeout=1)
+                if self.port is None:
+                    continue
+                break
             except serial.SerialException:
                 continue
 
@@ -115,7 +118,7 @@ class Motor:
         self.arduino.addCommand(self.ID, "", False)
 
     def setValue(self, value): # Value between -127 and 127
-        command = "{ID}{value:+04d}".format(ID=self.ID, value=int(value+.5))
+        command = "{ID}{value:+04d}".format(ID=self.ID, value=int(value))
         self.arduino.updateCommand(self.ID, command)
 
 class AnalogSensor:
