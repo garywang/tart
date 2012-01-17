@@ -32,8 +32,16 @@ def get_rgb_from_color(color):
         return (255, 255, 255)
     elif color==BLUE:
         return (0, 0, 255)
-    else:
+    elif color==YELLOW:
+        return (255, 255, 0)
+    elif color==PURPLE:
+        return (255, 0, 255)
+    elif color==GREEN:
+        return (0, 255, 0)
+    elif color==GRAY:
         return (0, 0, 0)
+    else:
+        return (150, 120, 0)
 
 def convert_to_colors(numpy.ndarray[numpy.uint8_t, ndim=3] im):
     global color_arr
