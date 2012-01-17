@@ -50,7 +50,7 @@ class Map:
         if len(balls)==0:
             self.closest_ball=None
         else:
-            self.closest_ball=get_abs_loc(vec=balls[0], rel=pos)
+            self.closest_ball=self.get_abs_loc(vec=balls[0], rel=pos)
     
     def get_closest_ball(self):
         """Return absolute location (x, y) of closest ball"""

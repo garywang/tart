@@ -1,6 +1,6 @@
-import sys
+import sys, time
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
-import arduino
+from tart.arduino import arduino
 from math import radians, sin, cos, sqrt
 
 class SimpleDrive:
@@ -52,14 +52,14 @@ class OmniDrive:
 
 if __name__ == "__main__":
     try:
-        ard = arduino.ArduinoThread()
+        ard = arduino.ArduinoThread(debug=True)
         dt = OmniDrive(ard)
 
         ard.start()
         success = ard.waitReady()
         
         dt.rotate(50)
-        #dt.forward()
+        dt.forward()
         #dt.translate(50, 90)
         time.sleep(5)
         

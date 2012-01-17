@@ -1,6 +1,6 @@
 import sys, time
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
-import arduino
+from tart.arduino import arduino
 from tart.logic import state_machine
 from tart.world import mapping
 #from tart.control import piddrive
@@ -9,7 +9,7 @@ from tart.actuators import drive
 class Cheesecake:
     def __init__(self):
         self.ard = arduino.ArduinoThread()
-        self.map = mapping.MappingThread()
+        self.map = mapping.Map()
         self.sm = state_machine.StateMachine(self)
         self.drive=drive.OmniDrive(self.ard)
 	#self.ctl = piddrive.PIDDriveThread(self)
@@ -18,14 +18,14 @@ class Cheesecake:
         #self.dt = drive.OmniDrive(self.ard)
     
     def start(self):
-        ard.start()
-        map.start()
-        sm.start()
+        self.ard.start()
+        self.map.start()
+        self.sm.start()
     
     def stop(self):
-        ard.stop()
-        map.stop()
-        sm.stop()
+        self.ard.stop()
+        self.map.stop()
+        self.sm.stop()
 
 if __name__ == "__main__":
     try:
