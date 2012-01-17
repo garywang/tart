@@ -11,6 +11,7 @@ class Cheesecake:
         self.ard = arduino.ArduinoThread()
         self.map = mapping.MappingThread()
         self.sm = state_machine.StateMachine(self)
+        self.drive=drive.OmniDrive(self.ard)
 	#self.ctl = piddrive.PIDDriveThread(self)
 	#self.cam = camera
 	#self.bump = bump

@@ -22,23 +22,18 @@ class StateMachine(threading.Thread):
         self.running = False
     
     def scan(self):
-        if self.robot.vis.get_closest_ball(): # sees a ball
+        if self.robot.map.get_closest_ball(): # sees a ball
             return self.approach
-        self.robot.dt.drive(127, -127)
+        self.robot.drive.rotate(50)
         return self.scan
     
     def approach(self):
-        if self.robot.vis.get_closest_ball() is None:
+        if self.robot.map.get_closest_ball() is None:
             return self.scan
-        x, y = self.robot.vis.get_closest_ball()
+        x, y = self.robot.map.get_vector_to(self.robot.map.get_closest_ball())
         # this stuff should go in control eventually.
         angle=math.pi/2-atan2(y, x)     #Right is positive, left is negative
-        if angle>math.pi/8:
-            self.robot.dt.drive(-50, -50)
-        elif angle<-math.pi/8:
-            self.robot.dt.drive(50, 50)
-        else:
-            self.robot.dt.drive(127, -127)
+        self.robot.drive.forward(rotation=angle*100)
         return self.approach
 
 if __name__ == '__main__':
