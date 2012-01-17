@@ -118,15 +118,17 @@ class VisionThread(threading.Thread):
         self.running=True
         self.proc.start()
         while self.running:
-            self.pipe.send(True)
             while self.running and not self.pipe.poll(1):
                 pass
             if not self.running:
                 break
             data=self.pipe.recv()
             print data
-            self.closest_ball=data["closest_ball"]
-        print "foo"
+            self.balls=data["balls"]
+            if len(self.balls)>0:
+                self.closest_ball=self.balls[0]
+            else:
+                self.closest_ball=None
         if self.proc.is_alive():
             self.pipe.send(False)
     
@@ -149,7 +151,7 @@ class VisionProc(multiprocessing.Process):
         if self.debug:
             self.debug_thread.start()
         try:
-            while self.pipe.recv() == True:
+            while self.pipe.poll() == False or self.pipe.recv() == True:
                 t=time.time()
                 im=self.cam.get_image()
                 print "~"+str(time.time()-t)
@@ -169,11 +171,11 @@ class VisionProc(multiprocessing.Process):
                 print "b"+str(time.time()-t)
                 t=time.time()
                 
-                closest_ball=self.find_closest_ball(colors, smaller_im)
+                balls=self.find_balls(colors, smaller_im)
                 
                 print "c"+str(time.time()-t)
                 
-                self.pipe.send({"closest_ball": closest_ball})
+                self.pipe.send({"balls": balls})
                 self.colors=colors
                 
                 time.sleep(0.01)
@@ -184,11 +186,12 @@ class VisionProc(multiprocessing.Process):
                 self.debug_thread.stop()
             self.cam.stop()
     
-    def find_closest_ball(self, colors, im):
+    def find_balls(self, colors, im):
+        balls=[]
         for b in find_blobs(colors, color=RED, reverse=True):
             if self.is_ball(b, im):
-                return self.cam.info.get_vector(b[0], im)
-        return None
+                balls.append(self.cam.info.get_vector(b[0], im))
+        return balls
     
     def is_ball(self, blob, im):
         """Check if a list of pixels is a ball"""
