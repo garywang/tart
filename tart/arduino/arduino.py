@@ -26,15 +26,20 @@ class ArduinoThread(threading.Thread):
     
     def connect(self):
         print "Connecting"
-        try:
-            self.port = serial.Serial(port='/dev/ttyACM2', baudrate=9600, timeout=1)
+        for i in range(3):
+            try:
+                self.port = serial.Serial(port='/dev/ttyACM{0:01d}'.format(i), baudrate=9600, timeout=1)
+            except serial.SerialException:
+                continue
+
+        if self.port:
             time.sleep(2) # Allows the arduino to initialize
             self.port.flush()
-        except serial.SerialException:
+            print "Connected"
+        else:
+            print "Arduino not connected"
             self.stop()
-            raise
-        print "Connected"
-    
+
     def loopCommands(self):
         self.lock.acquire()
         for ID, command in self.commands.iteritems():
