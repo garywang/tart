@@ -107,9 +107,10 @@ def find_blobs(numpy.ndarray[numpy.int8_t, ndim=2] im, color=None, reverse=False
 
 
 class VisionThread(threading.Thread):
-    def __init__(self, info=None, debug=False):
+    def __init__(self, map=None, info=None, debug=False):
         threading.Thread.__init__(self)
         parent_conn, child_conn = multiprocessing.Pipe()
+        self.map=map
         self.pipe=parent_conn
         self.proc=VisionProc(info, child_conn, debug)
         self.running=False
@@ -117,18 +118,29 @@ class VisionThread(threading.Thread):
     def run(self):
         self.running=True
         self.proc.start()
+        
+        if self.map is not None:
+            pos=self.map.get_pos()
+        
         while self.running:
             while self.running and not self.pipe.poll(1):
                 pass
             if not self.running:
                 break
+            
             data=self.pipe.recv()
             print data
+            
             self.balls=data["balls"]
             if len(self.balls)>0:
                 self.closest_ball=self.balls[0]
             else:
                 self.closest_ball=None
+            
+            if self.map is not None:
+                self.map.update_balls(pos, self.balls)
+                pos=self.map.get_pos()
+            
         if self.proc.is_alive():
             self.pipe.send(False)
     
