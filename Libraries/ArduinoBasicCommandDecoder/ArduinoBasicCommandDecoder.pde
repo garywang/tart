@@ -123,7 +123,7 @@ void moveMotor(){
   else { // motor does not exist
     Serial.print(controller);
     Serial.print(num);
-    Serial.print(val);
+    Serial.println(val);
   }
 }
 //---------------

@@ -2,7 +2,8 @@ import sys, time
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
 import arduino
 from tart.logic import state_machine
-from tart.sensors import vision, mouse, mapping
+from tart.world import vision
+from tart.control import pidrive
 from tart.actuators import drive
 
 class Cheesecake:
@@ -11,7 +12,10 @@ class Cheesecake:
         self.vis = vision.VisionThread(self)
         #self.map = mapping.MappingThread(self) # not implemented. notes: arguments
         self.sm = state_machine.StateMachine(self)
-        self.dt = drive.OmniDrive(self.ard, 0, 1, 2)
+	self.ctl = control.PIDriveThread(self)
+	#self.cam = camera
+	#self.bump = bump
+        #self.dt = drive.OmniDrive(self.ard)
     
     def start(self):
         ard.start()

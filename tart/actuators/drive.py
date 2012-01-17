@@ -23,7 +23,7 @@ class OmniDrive:
         mcB, numB = motorB
         self.motorL = arduino.Motor(ard, mcL, numL) # front left
         self.motorR = arduino.Motor(ard, mcR, numR) # front right
-        self.motorB = arduino.Motor(ard, mcB, numB) # back wheel. note: motor controller only does 2 motors. have to fix on arduino side.
+        self.motorB = arduino.Motor(ard, mcB, numB)
     
     def setMotors(self, left, right, back):
         self.motorL.setValue(left)
