@@ -115,7 +115,7 @@ class Motor:
         self.arduino.addCommand(self.ID, "", False)
 
     def setValue(self, value): # Value between -127 and 127
-        command = "{ID}{value:+03d}".format(ID=self.ID, value=value)
+        command = "{ID}{value:+04d}".format(ID=self.ID, value=int(value+.5))
         self.arduino.updateCommand(self.ID, command)
 
 class AnalogSensor:
