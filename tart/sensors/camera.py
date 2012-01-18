@@ -34,7 +34,6 @@ class RealCamera(Camera):
         self.info=info
     
     def get_image(self):
-        self.time=time.time()
         return cv.QueryFrame(self.capture)
     
     def update(self):
@@ -50,8 +49,10 @@ class WrapperCamera(threading.Thread, Camera):
         threading.Thread.__init__(self)
         self.cam=cam
         self.info=cam.info
-        self.start()
         self.im=None
+        self.time=0
+        self.last_time=0
+        self.start()
     
     def run(self):
         self.running=True
@@ -62,6 +63,9 @@ class WrapperCamera(threading.Thread, Camera):
         self.cam.stop()
     
     def get_image(self):
+        while self.im is None or self.time==self.last_time:
+            time.sleep(0.003)
+        self.last_time=self.time
         return self.im
     
     def stop(self):
@@ -83,9 +87,6 @@ class WebCam(Camera):
     
     def get_image(self):
         return self.cam.get_image()
-    
-    def get_time(self):
-        return self.cam.time
     
     def stop(self):
         self.cam.stop()
