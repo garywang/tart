@@ -40,7 +40,7 @@ class PIDController:
         res=self.Kp*err
         if last_err is not None:
             res+=self.Kd*(err-self.last_err)/(time.time()-self.last_time)
-        last_err=err
-        last_time=time.time()
+        self.last_err=err
+        self.last_time=time.time()
         self.err_sum+=err
         res+=self.Ki*err
