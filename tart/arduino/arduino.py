@@ -1,4 +1,4 @@
-import serial, time, threading, thread
+import serial, time, threading, thread, math
 
 class ArduinoThread(threading.Thread):
     
