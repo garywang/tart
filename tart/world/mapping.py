@@ -24,6 +24,10 @@ class Map:
         """Get current position (x, y, theta)"""
         return self.odometry.get_pos()
     
+    def get_velocity(self):
+        """Get current velocity (vx, vy, vtheta)"""
+        return self.odometry.get_speed()
+    
     def get_abs_loc(self, vec, rel=None):
         """Get absolute location (x, y) of vec relative to current position or rel"""
         if rel is None:
@@ -44,8 +48,10 @@ class Map:
         return (dx*math.cos(theta)+dy*math.sin(theta), \
                -dx*math.sin(theta)+dy*math.cos(theta))
     
-    def get_velocity(self):
-        return self.odometry.get_speed()
+    def get_length(self, vec):
+        """Return length of vec (x, y)"""
+        x, y=vec
+        return math.sqrt(x*x+y*y)
     
     def update_balls(self, pos, balls):
         if len(balls)==0:
