@@ -34,11 +34,10 @@ class RealCamera(Camera):
         self.info=info
     
     def get_image(self):
-        cv.GrabFrame(self.capture)
-        return cv.RetrieveFrame(self.capture)
+        return cv.QueryFrame(self.capture)
     
     def update(self):
-        cv.GrabFrame(self.capture)
+        cv.QueryFrame(self.capture)
     
     def stop(self):
         del(self.capture)

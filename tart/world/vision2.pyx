@@ -167,15 +167,12 @@ class VisionProc(multiprocessing.Process):
     
     def run(self):
         read_color_data()
-        self.cam=WebCam(wrapped=False, info=self.cam_info)
+        self.cam=WebCam(wrapped=True, info=self.cam_info)
         if self.debug:
             self.debug_thread.start()
         try:
             while self.pipe.poll() == False or self.pipe.recv() == True:
-                #t=time.time()
                 im=self.cam.get_image()
-                #print "~"+str(time.time()-t)
-                #t=time.time()
                 small_im=cv.CreateImage((im.width/2, im.height/2), cv.IPL_DEPTH_8U, 3)
                 cv.PyrDown(im, small_im);
                 smaller_im=cv.CreateImage((im.width/4, im.height/4), cv.IPL_DEPTH_8U, 3)
@@ -183,22 +180,14 @@ class VisionProc(multiprocessing.Process):
                 
                 mat=numpy.asarray(cv.GetMat(smaller_im))
                 
-                #print "a"+str(time.time()-t)
-                #t=time.time()
-                
                 colors=convert_to_colors(mat)
                 
-                #print "b"+str(time.time()-t)
-                #t=time.time()
-                
                 balls=self.find_balls(colors, smaller_im)
-                
-                #print "c"+str(time.time()-t)
                 
                 self.pipe.send({"balls": balls})
                 self.colors=colors
                 
-                time.sleep(0.01)
+                #time.sleep(0.01)
         except KeyboardInterrupt:
             pass
         finally:
