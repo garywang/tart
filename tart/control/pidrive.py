@@ -38,7 +38,7 @@ class PIDController:
     
     def step(self, err):
         res=self.Kp*err
-        if last_err is not None:
+        if self.last_err is not None:
             res+=self.Kd*(err-self.last_err)/(time.time()-self.last_time)
         self.last_err=err
         self.last_time=time.time()
