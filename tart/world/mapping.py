@@ -10,6 +10,7 @@ class Map:
         self.vis=vision.VisionThread(map=self)
         self.odometry=odometry.OdometryThread()
         self.closest_ball=None
+        self.memorized_balls=[]
     
     def start(self):
         self.vis.start()
@@ -19,7 +20,7 @@ class Map:
         self.vis.stop()
         self.odometry.stop()
     
-    def get_pos(self, vec=None, rel=None):
+    def get_pos(self):
         """Get current position (x, y, theta)"""
         return self.odometry.get_pos()
     
@@ -43,7 +44,7 @@ class Map:
         return (dx*math.cos(theta)+dy*math.sin(theta), \
                -dx*math.sin(theta)+dy*math.cos(theta))
     
-    def get_speed(self):
+    def get_velocity(self):
         return self.odometry.get_speed()
     
     def update_balls(self, pos, balls):
@@ -52,6 +53,10 @@ class Map:
         else:
             self.closest_ball=self.get_abs_loc(vec=balls[0], rel=pos)
     
-    def get_closest_ball(self):
+    def get_visible_ball(self):
         """Return absolute location (x, y) of closest ball"""
         return self.closest_ball
+
+    def get_memorized_ball(self):
+        """Return memorized ball with smallest angle to current orientation"""
+        return None

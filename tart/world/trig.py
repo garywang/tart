@@ -7,7 +7,7 @@ def get_dist(vec1, vec2=(0,0,0)):
     return math.sqrt(d1*d1+d2*d2+d3*d3)
 
 class CameraInfo():
-    
+    """Physical information about camera location, used as parameters for vision"""
     def __init__(self, cam_height, height_angle, width_angle, min_dist):
         
         #height of camera from the ground

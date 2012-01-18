@@ -148,7 +148,13 @@ class VisionThread(threading.Thread):
         self.running=False
 
 class VisionProc(multiprocessing.Process):
+
     def __init__(self, cam_info, pipe, debug=False):
+        """Initializes the vision process.
+
+        cam_info is a CameraInfo object, used to initialize the camera's physical location
+        pipe is used to communicate with the other process
+        debug enables the debug mode"""
         multiprocessing.Process.__init__(self)
         self.cam_info=cam_info
         self.pipe=pipe
@@ -211,7 +217,7 @@ class VisionProc(multiprocessing.Process):
         return size>15 and size<45
 
 class DebugThread(threading.Thread):
-    
+    """Pretty colors"""
     def __init__(self, proc):
         threading.Thread.__init__(self)
         self.proc=proc
