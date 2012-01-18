@@ -54,15 +54,29 @@ class Map:
         return math.sqrt(x*x+y*y)
     
     def update_balls(self, pos, balls):
+        for ball in balls:
+            ball=self.get_abs_loc(vec=ball, rel=pos)
         if len(balls)==0:
             self.closest_ball=None
         else:
-            self.closest_ball=self.get_abs_loc(vec=balls[0], rel=pos)
+            self.closest_ball=balls[0]
+        for ball in self.memorized_balls:
+            dx, dy=self.get_vector_to(loc=ball, rel=pos)
+            if math.fabs(math.pi/2-math.atan2(dy, dx))>0.3:
+                balls.append(ball)
+        self.memorized_balls=balls
     
     def get_visible_ball(self):
         """Return absolute location (x, y) of closest ball"""
         return self.closest_ball
-
+    
     def get_memorized_ball(self):
         """Return memorized ball with smallest angle to current orientation"""
-        return None
+        best=None
+        best_angle=math.pi
+        for ball in self.memorized_balls:
+            dx, dy=self.get_vector_to(ball)
+            if math.fabs(math.pi/2-math.atan2(dy, dx))<best_angle:
+                best_angle=math.fabs(math.pi/2-math.atan2(dy, dx))
+                best=ball
+        return best
