@@ -167,7 +167,7 @@ class VisionProc(multiprocessing.Process):
     
     def run(self):
         read_color_data()
-        self.cam=WebCam(wrapped=True, info=self.cam_info)
+        self.cam=WebCam(wrapped=False, info=self.cam_info)
         if self.debug:
             self.debug_thread.start()
         try:
