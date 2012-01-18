@@ -43,5 +43,5 @@ class PIDController:
         self.last_err=err
         self.last_time=time.time()
         self.err_sum+=err
-        res+=self.Ki*err
+        res+=self.Ki*self.err_sum
         return res
