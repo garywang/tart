@@ -1,5 +1,5 @@
 import sys, pyximport; pyximport.install()
-import math
+import math, threading, multiprocessing
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
 from tart.world import vision2 as vision
 from tart.world import odometry
@@ -12,7 +12,7 @@ class Map(threading.Thread):
         parent_conn, child_conn = multiprocessing.Pipe()
         self.vis_pipe = parent_conn
         self.vis_proc = vision.VisionProcess(child_conn)
-        self.odom = odom.OdometryThread()
+        self.odometry = odometry.OdometryThread()
         self.closest_ball = None
         self.memorized_balls = []
         self.debug = debug

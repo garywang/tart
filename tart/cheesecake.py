@@ -10,7 +10,7 @@ class Cheesecake:
         self.ard = arduino.ArduinoThread()
         self.map = mapping.Map()
         self.sm = state_machine.StateMachine(self)
-        self.drive = pidrive.PIDriveController(self, self.ard, self.map)
+        self.drive = pidrive.PIDriveController(self.ard, self.map)
     
     def start(self):
         self.ard.start()
