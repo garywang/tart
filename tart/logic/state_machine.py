@@ -5,9 +5,10 @@ import math
 from tart.logic import states
 
 class StateMachine(threading.Thread):
-    def __init__(self, robot):
+    def __init__(self, robot, debug=False):
         threading.Thread.__init__(self)
         states.robot = robot
+        self.debug=debug
         self.running = False
         
     def run(self):
@@ -16,6 +17,8 @@ class StateMachine(threading.Thread):
         self.state = states.ScanState()
         while self.running:
             self.state = self.state.step()
+            if self.debug:
+                print self.state
             time.sleep(0)
     
     def stop(self):

@@ -6,7 +6,8 @@ from tart.world import odometry
 
 class Map:
     
-    def __init__(self):
+    def __init__(self, debug=False):
+        self.debug=debug
         self.vis=vision.VisionThread(map=self)
         self.odometry=odometry.OdometryThread()
         self.closest_ball=None
@@ -65,6 +66,8 @@ class Map:
             if math.fabs(math.pi/2-math.atan2(dy, dx))>0.3:
                 balls.append(ball)
         self.memorized_balls=balls
+        if self.debug:
+            print str(len(self.memorized_balls))+" memorized balls"
     
     def get_visible_ball(self):
         """Return absolute location (x, y) of closest ball"""
