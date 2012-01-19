@@ -58,10 +58,10 @@ if __name__ == "__main__":
         ard.start()
         success = ard.waitReady()
         
-        dt.rotate(50)
-        dt.forward()
+        dt.rotate(127)
+        #dt.forward()
         #dt.translate(50, 90)
-        time.sleep(5)
+        time.sleep(100)
         
     finally:
         ard.stop()
