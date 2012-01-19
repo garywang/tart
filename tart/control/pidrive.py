@@ -15,8 +15,8 @@ class PIDriveController(drive.OmniDrive):
         if self.debug:
             print "drive to: "+str(point)
         
-        dx, dy=self.map.get_vector_to(point)
-        theta=math.pi/2-math.atan2(dy, dx)
+        v=self.map.get_vector_to(point)
+        theta=self.map.get_angle(v)
         self.forward(self.drive_controller.step(theta))
     
     def rotate_toward_point(self, point):
@@ -24,8 +24,8 @@ class PIDriveController(drive.OmniDrive):
         if self.debug:
             print "rotate toward: "+str(point)
         
-        dx, dy=self.map.get_vector_to(point)
-        theta=math.pi/2-math.atan2(dy, dx)
+        v=self.map.get_vector_to(point)
+        theta=self.map.get_angle(v)
         self.rotate(self.rotate_controller.step(theta))
 
 class PController:

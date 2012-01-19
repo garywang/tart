@@ -105,15 +105,14 @@ def find_blobs(numpy.ndarray[numpy.int8_t, ndim=2] im, color=None, reverse=False
             arr.append(current)
     return arr
 
-
-class VisionThread(threading.Thread):
+class VisionThread(threading.Thread): #Not used
     def __init__(self, map=None, info=None, debug=False):
         threading.Thread.__init__(self)
         parent_conn, child_conn = multiprocessing.Pipe()
         self.map=map
         self.pipe=parent_conn
         self.debug=debug
-        self.proc=VisionProc(info, child_conn, debug)
+        self.proc=VisionProcess(child_conn, info, debug)
         self.running=False
     
     def run(self):
@@ -149,9 +148,9 @@ class VisionThread(threading.Thread):
     def stop(self):
         self.running=False
 
-class VisionProc(multiprocessing.Process):
+class VisionProcess(multiprocessing.Process):
 
-    def __init__(self, cam_info, pipe, debug=False):
+    def __init__(self, pipe, cam_info=None, debug=False):
         """Initializes the vision process.
 
         cam_info is a CameraInfo object, used to initialize the camera's physical location
