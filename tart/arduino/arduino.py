@@ -28,10 +28,9 @@ class ArduinoThread(threading.Thread):
         print "Connecting"
         for i in range(3):
             try:
-                self.port = serial.Serial(port='/dev/ttyACM{0:01d}'.format(i), baudrate=9600, timeout=1)
-                if self.port is None:
-                    continue
-                break
+                self.port = serial.Serial(port='/dev/ttyACM{0:01d}'.format(i), baudrate=9600, timeout=2)
+                if self.port:
+                    break
             except serial.SerialException:
                 continue
 
@@ -52,6 +51,10 @@ class ArduinoThread(threading.Thread):
                 print "Sent:", command
             # block for response (don't flood the arduino with commands)
             response = self.port.readline().strip()
+            if not response:
+                print "Response timeout"
+                self.stop()
+                break
             self.responses[ID] = response
             if self.debug:
                 print "Received:", response
@@ -61,8 +64,10 @@ class ArduinoThread(threading.Thread):
     #This should not be called while the thread is still running
     def close(self):
         if self.port.isOpen():
+            self.lock.acquire()
             self.port.flush()
             self.port.close()
+            self.lock.release()
     
     def waitReady(self): # Wait until connected
         while self.running and not self.port: time.sleep(0.001)
