@@ -1,5 +1,5 @@
 import sys, pyximport; pyximport.install()
-import math, threading, multiprocessing
+import math, threading, multiprocessing, cv
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
 from tart.world import vision2 as vision
 from tart.world import odometry
@@ -16,12 +16,17 @@ class Map(threading.Thread):
         self.closest_ball = None
         self.memorized_balls = []
         self.debug = debug
+        if self.debug:
+            self.debug_thread=MapDisplayThread(self)
         self.running = False
     
     def run(self):
         self.running = True
         self.vis_proc.start()
         self.odometry.start()
+        
+        if self.debug:
+            self.debug_thread.start()
         
         pos = self.get_pos()
 
@@ -41,7 +46,9 @@ class Map(threading.Thread):
         self.odometry.stop()
         if self.vis_proc.is_alive():
             self.vis_pipe.send(False)
- 
+        if self.debug:
+            self.debug_thread.stop()
+    
     def update_balls(self, pos, balls):
         for ball in balls:
             ball=self.get_abs_loc(vec=ball, rel=pos)
@@ -108,3 +115,28 @@ class Map(threading.Thread):
                 best_angle=math.fabs(self.get_angle(v))
                 best=ball
         return best
+
+class MapDisplayThread(threading.Thread):
+    def __init__(self, map):
+        self.map=map
+        self.running=False
+    
+    def run(self):
+        self.running=True
+        im=v.CreateImage((500, 500), cv.IPL_DEPTH_8U, 3)
+        while self.running:
+            cv.Rectangle(im, (0,0), (500,500), (255, 255, 255), cv.CV_FILLED)
+            cv.Circle(im, self.get_pixel(self.map.get_pos()), 8, (0, 0, 0), cv.CV_FILLED)
+            for ball in self.map.memorized_balls:
+                cv.Circle(im, self.get_pixel(ball), 2, (0, 0, 155), cv.CV_FILLED)
+            cur_ball=self.map.get_visible_ball() or self.map.get_memorized_ball()
+            if cur_ball is not None:
+                cv.Circle(im, self.get_pixel(cur_ball), 2, (0, 0, 255), cv.CV_FILLED)
+            cv.ShowImage("map", im)
+            cv.WaitKey(20)
+    
+    def get_pixel(self, pos):
+        return (int(pos[0]/2.+250), int(pos[1]/2.+250))
+    
+    def stop():
+        self.running=False
