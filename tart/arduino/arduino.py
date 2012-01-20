@@ -14,9 +14,9 @@ class ArduinoThread(threading.Thread):
     
     def run(self):
         self.running = True
-        self.connected = self.connect()
+        self.connect()
         
-        while self.running and self.port.isOpen():
+        while self.running and self.connected:
             if self.debug:
                 print "Commands:", self.commands
                 print "Responses:", self.responses
@@ -39,10 +39,9 @@ class ArduinoThread(threading.Thread):
             time.sleep(2) # Allows the arduino to initialize
             self.port.flush()
             print "Connected"
-            return True
+            self.connected = True
         else:
             print "Arduino not connected"
-            return False
 
     def loopCommands(self):
         self.lock.acquire()
@@ -70,6 +69,7 @@ class ArduinoThread(threading.Thread):
             self.port.flush()
             self.port.close()
             self.lock.release()
+            self.connected = False
     
     def waitReady(self): # Wait until connected
         while self.running and not self.connected: time.sleep(0.001)
