@@ -127,6 +127,7 @@ class Map(threading.Thread):
 
 class MapDisplayThread(threading.Thread):
     def __init__(self, map):
+        threading.Thread.__init__(self)
         self.map=map
         self.running=False
     
