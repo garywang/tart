@@ -18,5 +18,6 @@ if __name__=="__main__":
     #This is so that when you hit ctrl-C in the terminal, all the arduino threads close. You can do something similar with threads in your program.
     except KeyboardInterrupt:
         print "Ending Program"
-        ard.killReceived=True
-        
+    
+    finally:
+        ard.stop()
