@@ -25,10 +25,9 @@ if __name__=="__main__":
         
         dt.setMotors(0, 0)
 
-        ard.stop()
     #This is so that when you hit ctrl-C in the terminal, all the arduino threads close. You can do something similar with threads in your program.
     except KeyboardInterrupt:
         print "Ending Program"
     
     finally:
-        ard.killReceived=True
+        ard.stop()
