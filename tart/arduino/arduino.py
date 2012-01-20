@@ -29,18 +29,18 @@ class ArduinoThread(threading.Thread):
         for i in range(3):
             try:
                 self.port = serial.Serial(port='/dev/ttyACM{0:01d}'.format(i), baudrate=9600, timeout=2)
-                if self.port:
+                if self.port and self.port.isOpen():
                     break
             except serial.SerialException:
                 continue
 
-        if self.port:
+        if self.port and self.port.isOpen():
             time.sleep(2) # Allows the arduino to initialize
             self.port.flush()
             print "Connected"
+            return True
         else:
             print "Arduino not connected"
-            self.stop()
 
     def loopCommands(self):
         self.lock.acquire()
@@ -117,9 +117,9 @@ class Servo:
         self.arduino.updateCommand(self.ID, command)
 
 class Motor:
-    def __init__(self, _arduino, _controller, _num):
+    def __init__(self, _arduino, _id):
         self.arduino = _arduino
-        self.ID = "M{controller:01d}{num:01d}".format(controller=_controller, num=_num)
+        self.ID = "M{controller:01d}{num:01d}".format(controller=_id[0], num=_id[1])
         self.arduino.addCommand(self.ID, "", False)
 
     def setValue(self, value): # Value between -127 and 127
@@ -154,7 +154,7 @@ class DigitalSensor:
 if __name__=="__main__":
     try:
         ard = ArduinoThread(debug=True)
-        motor = Motor(ard, 1, 0)
+        motor = Motor(ard, (1,0))
         #sensor = AnalogSensor(ard, 0)
 
         ard.start()
