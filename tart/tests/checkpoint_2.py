@@ -13,10 +13,10 @@ if __name__=="__main__":
         ard.start()
         ard.waitReady()
         
-        dt.setMotors(-127, 127)
+        dt.setMotors(127, 127)
 
         t = time.time()
-        while time.time()-t < 10:
+        while time.time() - t < 10:
             print switch.getValue()
             if switch.pressed():
                 print "Wall bumped"
@@ -26,7 +26,7 @@ if __name__=="__main__":
         dt.setMotors(0, 0)
         time.sleep(0.5)
 
-        dt.setMotors(127, -127)
+        dt.setMotors(-127, -127)
         time.sleep(2)
         
         dt.setMotors(0, 0)

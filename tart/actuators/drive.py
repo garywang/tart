@@ -11,7 +11,7 @@ class SimpleDrive:
         self.motorR = arduino.Motor(ard, motorR)
     
     def setMotors(self, left, right):
-        self.motorL.setValue(left)
+        self.motorL.setValue(-left)
         self.motorR.setValue(right)
 
     def rotate(self, value):
