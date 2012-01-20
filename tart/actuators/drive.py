@@ -6,24 +6,33 @@ from math import radians, sin, cos, sqrt
 class SimpleDrive:
     """Simple drive class"""
     
-    def __init__(self, ard, numL=0, numR=1):
-        self.motorL = arduino.Motor(ard, 1, numL)
-        self.motorR = arduino.Motor(ard, 1, numR)
+    def __init__(self, ard, motorL=(1,0), motorR=(1,1)):
+        self.motorL = arduino.Motor(ard, motorL)
+        self.motorR = arduino.Motor(ard, motorR)
     
-    def drive(self, left, right):
-        self.motorL.setValue(left)
+    def setMotors(self, left, right):
+        self.motorL.setValue(-left)
         self.motorR.setValue(right)
+
+    def rotate(self, value):
+        self.setMotors(value, -value)
+
+    def forward(self, rotation=0):
+        if rotation >= 0:
+            l = 127
+            r = 127-rotation 
+        elif rotation < 0:
+            l = 127-rotation
+            r = 127
+        self.setMotors(l, r)
 
 class OmniDrive:
     """Omnidirectional drive with 3 omniwheels. Assumes positive motor outputs go clockwise and positive angle goes clockwise"""
     
     def __init__(self, ard, motorL=(1,0), motorR=(1,1), motorB=(2,0)):
-        mcL, numL = motorL
-        mcR, numR = motorR
-        mcB, numB = motorB
-        self.motorL = arduino.Motor(ard, mcL, numL) # front left
-        self.motorR = arduino.Motor(ard, mcR, numR) # front right
-        self.motorB = arduino.Motor(ard, mcB, numB)
+        self.motorL = arduino.Motor(ard, motorL) # front left
+        self.motorR = arduino.Motor(ard, motorR) # front right
+        self.motorB = arduino.Motor(ard, motorB) # back
     
     def setMotors(self, left, right, back):
         self.motorL.setValue(left)

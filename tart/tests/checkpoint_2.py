@@ -6,27 +6,34 @@ from tart.sensors import sensor
 
 if __name__=="__main__":
     try:
-        ard = arduino.Arduino()
-        dt = drive.SimpleDrive(ard, 0, 1)
-        switch = sensor.BumpSensor(ard,2)
+        ard = arduino.ArduinoThread()
+        dt = drive.SimpleDrive(ard)
+        switch = sensor.BumpSensor(ard, 23)
 
         ard.start()
+        ard.waitReady()
         
-        for i in range(300):
+        dt.setMotors(127, 127)
+
+        t = time.time()
+        while time.time() - t < 10:
+            print switch.getValue()
             if switch.pressed():
                 print "Wall bumped"
                 break
-            dt.drive(127, -127)
+            time.sleep(0.01)
         
-        dt.drive(0, 127)
-        time.sleep(1)
-        
-        dt.drive(0, 0)
+        dt.setMotors(0, 0)
+        time.sleep(0.5)
 
-        ard.stop()
+        dt.setMotors(-127, -127)
+        time.sleep(2)
+        
+        dt.setMotors(0, 0)
+
     #This is so that when you hit ctrl-C in the terminal, all the arduino threads close. You can do something similar with threads in your program.
     except KeyboardInterrupt:
         print "Ending Program"
     
     finally:
-        ard.killReceived=True
+        ard.stop()

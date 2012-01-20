@@ -6,18 +6,19 @@ from tart.actuators import drive
 if __name__=="__main__":
     try:
         ard = arduino.Arduino(debug=True)
-        dt = drive.SimpleDrive(ard, 0, 1)
+        dt = drive.SimpleDrive(ard)
 
         ard.start()
+        ard.waitReady()
 
-        dt.drive(127, -127)
+        dt.setMotors(127, -127)
         time.sleep(2)
 
-        dt.drive(0, 0)
+        dt.setMotors(0, 0)
 
-        ard.stop()
     #This is so that when you hit ctrl-C in the terminal, all the arduino threads close. You can do something similar with threads in your program.
     except KeyboardInterrupt:
         print "Ending Program"
-        ard.killReceived=True
-        
+    
+    finally:
+        ard.stop()

@@ -9,13 +9,14 @@ class ArduinoThread(threading.Thread):
         self.lock = threading.Lock()
         self.port = None
         self.running = False
+        self.connected = False
         self.debug = debug
     
     def run(self):
         self.running = True
         self.connect()
         
-        while self.running and self.port.isOpen():
+        while self.running and self.connected:
             if self.debug:
                 print "Commands:", self.commands
                 print "Responses:", self.responses
@@ -28,20 +29,19 @@ class ArduinoThread(threading.Thread):
         print "Connecting"
         for i in range(3):
             try:
-                self.port = serial.Serial(port='/dev/ttyACM{0:01d}'.format(i), baudrate=9600, timeout=1)
-                if self.port is None:
-                    continue
-                break
+                self.port = serial.Serial(port='/dev/ttyACM{0:01d}'.format(i), baudrate=9600, timeout=2)
+                if self.port and self.port.isOpen():
+                    break
             except serial.SerialException:
                 continue
 
-        if self.port:
+        if self.port and self.port.isOpen():
             time.sleep(2) # Allows the arduino to initialize
             self.port.flush()
             print "Connected"
+            self.connected = True
         else:
             print "Arduino not connected"
-            self.stop()
 
     def loopCommands(self):
         self.lock.acquire()
@@ -52,6 +52,10 @@ class ArduinoThread(threading.Thread):
                 print "Sent:", command
             # block for response (don't flood the arduino with commands)
             response = self.port.readline().strip()
+            if not response:
+                print "Response timeout"
+                self.stop()
+                break
             self.responses[ID] = response
             if self.debug:
                 print "Received:", response
@@ -60,12 +64,15 @@ class ArduinoThread(threading.Thread):
     
     #This should not be called while the thread is still running
     def close(self):
-        if self.port.isOpen():
+        if self.port and self.port.isOpen():
+            self.lock.acquire()
             self.port.flush()
             self.port.close()
+            self.lock.release()
+            self.connected = False
     
     def waitReady(self): # Wait until connected
-        while self.running and not self.port: time.sleep(0.001)
+        while self.running and not self.connected: time.sleep(0.001)
         return self.running
     
     def addCommand(self, ID, command, response):
@@ -105,17 +112,17 @@ class Servo:
     def __init__(self, _arduino, _port):
         self.arduino = _arduino
         self.ID = "S{port:02d}".format(port=_port)
-        self.arduino.addCommand(self.ID, "", False)
+        self.arduino.addCommand(self.ID, 0, False)
 
     def setAngle(self, angle):
         command = "{ID}{angle:03d}".format(ID=self.ID, angle=angle)
         self.arduino.updateCommand(self.ID, command)
 
 class Motor:
-    def __init__(self, _arduino, _controller, _num):
+    def __init__(self, _arduino, _id):
         self.arduino = _arduino
-        self.ID = "M{controller:01d}{num:01d}".format(controller=_controller, num=_num)
-        self.arduino.addCommand(self.ID, "", False)
+        self.ID = "M{controller:01d}{num:01d}".format(controller=_id[0], num=_id[1])
+        self.arduino.addCommand(self.ID, "{ID}+000".format(ID=self.ID), False)
 
     def setValue(self, value): # Value between -127 and 127
         val=int(math.floor(value+0.5))
@@ -149,7 +156,7 @@ class DigitalSensor:
 if __name__=="__main__":
     try:
         ard = ArduinoThread(debug=True)
-        motor = Motor(ard, 1, 0)
+        motor = Motor(ard, (1,0))
         #sensor = AnalogSensor(ard, 0)
 
         ard.start()

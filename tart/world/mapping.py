@@ -6,13 +6,14 @@ from tart.world import odometry
 
 class Map(threading.Thread):
     
-    def __init__(self, debug=False):
+    def __init__(self, odom=True, debug=False):
         threading.Thread.__init__(self)
         #self.vis=vision.VisionThread(map=self)
         parent_conn, child_conn = multiprocessing.Pipe()
         self.vis_pipe = parent_conn
         self.vis_proc = vision.VisionProcess(child_conn)
-        self.odometry = odometry.OdometryThread()
+        if odom:
+            self.odometry = odometry.OdometryThread()
         self.closest_ball = None
         self.memorized_balls = []
         self.debug = debug
@@ -23,7 +24,8 @@ class Map(threading.Thread):
     def run(self):
         self.running = True
         self.vis_proc.start()
-        self.odometry.start()
+        if self.odometry:
+            self.odometry.start()
         
         if self.debug:
             self.debug_thread.start()
@@ -43,7 +45,8 @@ class Map(threading.Thread):
     
     def stop(self):
         self.running = False
-        self.odometry.stop()
+        if self.odometry:
+            self.odometry.stop()
         if self.vis_proc.is_alive():
             self.vis_pipe.send(False)
         if self.debug:
@@ -65,16 +68,22 @@ class Map(threading.Thread):
     
     def get_pos(self):
         """Get current position (x, y, theta)"""
-        return self.odometry.get_pos()
+        if self.odometry:
+            return self.odometry.get_pos()
+        else:
+            return (0, 0, 0)
     
     def get_velocity(self):
         """Get current velocity (vx, vy, vtheta)"""
-        return self.odometry.get_speed()
+        if self.odometry:
+            return self.odometry.get_speed()
+        else:
+            return (0, 0, 0)
     
     def get_abs_loc(self, vec, rel=None):
         """Get absolute location (x, y) of vec relative to current position or rel"""
         if rel is None:
-            rel=self.odometry.get_pos()
+            rel=self.get_pos()
         dx, dy=vec[0:2]
         x0, y0, theta=rel
         return (x0+dx*math.cos(theta)-dy*math.sin(theta), \
@@ -83,7 +92,7 @@ class Map(threading.Thread):
     def get_vector_to(self, loc, rel=None):
         """Get vector (dx, dy) to loc from current position or rel"""
         if rel is None:
-            rel=self.odometry.get_pos()
+            rel=self.get_pos()
         x0, y0, theta=rel
         x, y=loc[0:2]
         dx=x-x0
