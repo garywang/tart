@@ -11,7 +11,7 @@ if __name__=="__main__":
         switch = sensor.BumpSensor(ard, 23)
 
         ard.start()
-        ard.waitReady()
+        assert ard.waitReady()
         
         dt.setMotors(127, 127)
 

@@ -9,7 +9,7 @@ if __name__=="__main__":
         dt = drive.SimpleDrive(ard)
 
         ard.start()
-        ard.waitReady()
+        assert ard.waitReady()
 
         dt.setMotors(127, -127)
         time.sleep(2)

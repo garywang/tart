@@ -13,7 +13,7 @@ if __name__=="__main__":
 
         ard.start()
         vis.start()
-        ard.waitReady()
+        assert ard.waitReady()
         
         t = time.time()
         while time.time() - t > 20:

@@ -23,6 +23,7 @@ class ArduinoThread(threading.Thread):
             self.loopCommands()
             time.sleep(0)
             
+        self.running = False
         self.close()
     
     def connect(self):

@@ -15,7 +15,7 @@ class Cheesecake:
     def start(self):
         self.ard.start()
         self.map.start()
-        self.ard.waitReady()
+        assert self.ard.waitReady()
         # wait for start button
         self.start_time = time.time()
         self.sm.start()
