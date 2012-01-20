@@ -112,7 +112,7 @@ class Servo:
     def __init__(self, _arduino, _port):
         self.arduino = _arduino
         self.ID = "S{port:02d}".format(port=_port)
-        self.arduino.addCommand(self.ID, "", False)
+        self.arduino.addCommand(self.ID, 0, False)
 
     def setAngle(self, angle):
         command = "{ID}{angle:03d}".format(ID=self.ID, angle=angle)
@@ -122,7 +122,7 @@ class Motor:
     def __init__(self, _arduino, _id):
         self.arduino = _arduino
         self.ID = "M{controller:01d}{num:01d}".format(controller=_id[0], num=_id[1])
-        self.arduino.addCommand(self.ID, "", False)
+        self.arduino.addCommand(self.ID, "{ID}+000".format(ID=self.ID), False)
 
     def setValue(self, value): # Value between -127 and 127
         val=int(math.floor(value+0.5))
