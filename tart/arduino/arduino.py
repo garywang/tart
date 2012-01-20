@@ -72,9 +72,10 @@ class ArduinoThread(threading.Thread):
             self.lock.release()
             self.connected = False
     
-    def waitReady(self): # Wait until connected
-        while self.running and not self.connected: time.sleep(0.001)
-        return self.running
+    def waitReady(self, timeout): # Wait until connected
+        t = time.time()
+        while time.time() - t < timeout and not self.connected: time.sleep(0.001)
+        return self.connected
     
     def addCommand(self, ID, command, response):
         self.lock.acquire()
@@ -161,8 +162,7 @@ if __name__=="__main__":
         #sensor = AnalogSensor(ard, 0)
 
         ard.start()
-        success = ard.waitReady()
-        if not success: thread.exit()
+        assert ard.waitReady()
 
         motor.setValue(127)
         for i in range(100):
