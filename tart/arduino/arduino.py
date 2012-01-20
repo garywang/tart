@@ -72,7 +72,7 @@ class ArduinoThread(threading.Thread):
             self.lock.release()
             self.connected = False
     
-    def waitReady(self, timeout): # Wait until connected
+    def waitReady(self, timeout=60): # Wait until connected
         t = time.time()
         while time.time() - t < timeout and not self.connected: time.sleep(0.001)
         return self.connected
