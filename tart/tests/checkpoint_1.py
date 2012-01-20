@@ -11,7 +11,7 @@ if __name__=="__main__":
         ard.start()
         assert ard.waitReady()
 
-        dt.setMotors(127, -127)
+        dt.setMotors(127, 127)
         time.sleep(2)
 
         dt.setMotors(0, 0)
