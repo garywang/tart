@@ -4,7 +4,7 @@ from tart.sensors.mouse import Mouse
 
 class OdometryThread(threading.Thread):
 
-    def __init__(self, num1=1, num2=2, radius=256.):
+    def __init__(self, num1=1, num2=2, radius=3.2):
         threading.Thread.__init__(self)
         self.m1=Mouse(num1)
         self.m2=Mouse(num2)
