@@ -54,8 +54,7 @@ class Map(threading.Thread):
             self.debug_thread.stop()
     
     def update_balls(self, pos, balls):
-        for ball in balls:
-            ball=self.get_abs_loc(vec=ball, rel=pos)
+        balls=[self.get_abs_loc(vec=ball, rel=pos) for ball in balls]
         if len(balls)==0:
             self.closest_ball=None
         else:
