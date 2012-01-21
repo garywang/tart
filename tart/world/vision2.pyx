@@ -1,6 +1,7 @@
 from collections import deque
 import math, time, threading, cv, multiprocessing, numpy
 from tart.sensors.camera import WebCam
+from tart import params
 cimport numpy
 
 
@@ -106,7 +107,7 @@ def find_blobs(numpy.ndarray[numpy.int8_t, ndim=2] im, color=None, reverse=False
     return arr
 
 class VisionThread(threading.Thread): #Not used
-    def __init__(self, map=None, info=None, debug=False):
+    def __init__(self, map=None, info=None, debug=params.vision_debug):
         threading.Thread.__init__(self)
         parent_conn, child_conn = multiprocessing.Pipe()
         self.map=map

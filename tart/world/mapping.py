@@ -3,10 +3,11 @@ import math, threading, multiprocessing, cv
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
 from tart.world import vision2 as vision
 from tart.world import odometry
+from tart import params
 
 class Map(threading.Thread):
     
-    def __init__(self, odom=True, debug=False):
+    def __init__(self, odom=True, debug=params.mapping_debug):
         threading.Thread.__init__(self)
         #self.vis=vision.VisionThread(map=self)
         parent_conn, child_conn = multiprocessing.Pipe()

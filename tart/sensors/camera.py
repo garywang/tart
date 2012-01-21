@@ -1,5 +1,6 @@
 import cv, threading, time
 from tart.sensors.trig import CameraInfo
+from tart import params
 
 
 class Camera():
@@ -74,12 +75,9 @@ class WrapperCamera(threading.Thread, Camera):
 class WebCam(Camera):
     """Our webcam"""
     
-    def __init__(self, wrapped=True, info=None):
-        if info is None:
-            self.info=CameraInfo(cam_height=29., height_angle=0.70, width_angle=0.93, min_dist=28.)
-        else:
-            self.info=info
-        rc=RealCamera(1, self.info)
+    def __init__(self, wrapped=params.webcam_wrapped, info=params.webcam_info, num=params.webcam_num):
+        self.info=info
+        rc=RealCamera(num, self.info)
         if(wrapped):
             self.cam=WrapperCamera(rc)
         else:

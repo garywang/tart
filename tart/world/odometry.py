@@ -1,10 +1,11 @@
 import threading, time, math
 from collections import deque
 from tart.sensors.mouse import Mouse
+from tart import params
 
 class OdometryThread(threading.Thread):
 
-    def __init__(self, num1=1, num2=2, radius=3.2):
+    def __init__(self, num1=params.odometry_num1, num2=params.odometry_num2, radius=params.odometry_radius):
         threading.Thread.__init__(self)
         self.m1=Mouse(num1)
         self.m2=Mouse(num2)
