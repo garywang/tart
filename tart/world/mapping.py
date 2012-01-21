@@ -157,3 +157,19 @@ class MapDisplayThread(threading.Thread):
     
     def stop(self):
         self.running=False
+
+
+if __name__ == "__main__":
+    try:
+        m=Map(debug=True)
+        m.start()
+        time.sleep(3*60+5)
+    
+    except KeyboardInterrupt:
+        print "Ending Program"
+    
+    finally:
+        try:
+            m.stop()
+        except:
+            pass
