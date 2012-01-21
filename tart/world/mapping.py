@@ -153,7 +153,7 @@ class MapDisplayThread(threading.Thread):
             cv.WaitKey(20)
     
     def get_pixel(self, pos):
-        return (int(-pos[0]/2.+250), int(pos[1]/2.+250))
+        return (int(pos[0]/2.+250), int(-pos[1]/2.+250))
     
     def stop(self):
         self.running=False
