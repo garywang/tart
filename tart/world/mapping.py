@@ -1,5 +1,5 @@
 import sys, pyximport; pyximport.install()
-import math, threading, multiprocessing, cv
+import math, threading, multiprocessing, cv, time
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
 from tart.world import vision2 as vision
 from tart.world import odometry
@@ -163,7 +163,7 @@ if __name__ == "__main__":
     try:
         m=Map(debug=True)
         m.start()
-        time.sleep(3*60+5)
+        while True: time.sleep(1)
     
     except KeyboardInterrupt:
         print "Ending Program"
