@@ -1,9 +1,12 @@
-import threading
+import threading, sys
+sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
+from tart import params
 
 class Mouse(threading.Thread):
-    def __init__(self, num):
+    def __init__(self, num, scale=params.mouse_scale):
         threading.Thread.__init__(self)
         self.mouse=open("/dev/input/mouse"+str(num), "r")
+        self.scale=scale+0.
         self.sumx=0
         self.sumy=0
         self.lock=threading.Lock()
@@ -19,8 +22,8 @@ class Mouse(threading.Thread):
             if ord(s[0])&32>0:
                 y-=256
             self.lock.acquire()
-            self.sumx+=x/160.
-            self.sumy+=y/160.
+            self.sumx+=x/self.scale
+            self.sumy+=y/self.scale
             self.lock.release()
     
     def get_delta(self):

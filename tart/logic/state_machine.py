@@ -3,9 +3,10 @@ import threading, thread
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
 import math
 from tart.logic import states
+from tart import params
 
 class StateMachine(threading.Thread):
-    def __init__(self, robot, debug=False):
+    def __init__(self, robot, debug=params.state_debug):
         threading.Thread.__init__(self)
         states.robot = robot
         self.debug=debug

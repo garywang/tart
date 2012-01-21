@@ -1,4 +1,6 @@
-import time, math, random
+import time, math, random, sys
+sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
+from tart import params
 robot = None
 
 class State:
@@ -25,7 +27,7 @@ class ScanState(State):
         else:
             self.dir=1
         self.start_angle = self.map.get_pos()[2]
-        self.angle_duration = random.uniform(2*math.pi, 5*math.pi/2)
+        self.angle_duration = random.uniform(2*math.pi, 2*math.pi+params.state_scan_angle_max)
     
     def step(self):
         if self.map.get_visible_ball(): # sees a ball
@@ -33,7 +35,7 @@ class ScanState(State):
         if math.fabs(self.map.get_pos()[2] - self.start_angle) > self.angle_duration:
             return ExploreState()
         
-        self.drive.rotate(self.dir*50)
+        self.drive.rotate(self.dir*params.state_scan_speed)
         return self
 
 class RememberState(State):
@@ -56,8 +58,8 @@ class ApproachState(State):
         if ball is None:
             return RememberState()
         vec=self.map.get_vector_to(ball)
-        if vec[1]<40.:
-            if math.fabs(math.atan2(vec[1], vec[0])-math.pi/2)<0.1:
+        if vec[1]<params.state_capture_dist:
+            if math.fabs(math.atan2(vec[1], vec[0])-math.pi/2)<params.state_capture_max_angle:
                 return CaptureState(ball)
             self.drive.rotate_toward_point(ball)
         else:
@@ -72,8 +74,8 @@ class CaptureState(State):
     
     def step(self):
         self.drive.drive_to_point(self.ball)
-        if self.map.get_length(self.map.get_vector_to(self.ball))<5 or \
-                time.time()-self.start_time>4:
+        if self.map.get_length(self.map.get_vector_to(self.ball))<params.state_capture_exit_dist or \
+                time.time()-self.start_time>params.state_capture_timeout:
             return RememberState()
         else:
             return self
@@ -84,7 +86,7 @@ class ExploreState(State):
     def step(self):
         if self.map.get_closest_ball():
             return ApproachState()
-        if time.time()-self.start_time>5:
+        if time.time()-self.start_time>params.state_explore_timeout:
             return ScanState()
         self.drive.forward()
         return self

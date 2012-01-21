@@ -13,7 +13,7 @@ class OdometryThread(threading.Thread):
         self.x=0.
         self.y=0.
         self.theta=0.
-        self.interval=0.04
+        self.interval=params.odometry_interval
         self.que=deque()
         self.running=False
     
@@ -45,7 +45,7 @@ class OdometryThread(threading.Thread):
             two=self.que[-1]
             dt=two[0]-one[0]
             return ((two[1]-one[1])/dt, (two[2]-one[2])/dt, (two[3]-one[3])/dt)
-        return (0., 0., 123.)
+        return (0., 0., 0.)
     
     def stop(self):
         self.running=False

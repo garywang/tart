@@ -1,14 +1,15 @@
 import sys, time, math
 import threading, thread
 from tart.actuators import drive
+from tart import params
 
 class PIDriveController(drive.OmniDrive):
-    def __init__(self, ard, map, debug=False):
+    def __init__(self, ard, map, debug=params.drive_debug):
         drive.OmniDrive.__init__(self, ard)
         self.map=map
         self.debug=debug
-        self.drive_controller=PController(100)
-        self.rotate_controller=PController(100)
+        self.drive_controller=PController(params.drive_drive_kp)
+        self.rotate_controller=PController(params.drive_rotate_kp)
     
     def drive_to_point(self, point):
         """Use closed loop control to drive to a point"""

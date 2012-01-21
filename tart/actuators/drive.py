@@ -2,6 +2,7 @@ import sys, time
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
 from tart.arduino import arduino
 from math import radians, sin, cos, sqrt
+from tart import params
 
 class SimpleDrive:
     """Simple drive class"""
@@ -27,9 +28,11 @@ class SimpleDrive:
         self.setMotors(l, r)
 
 class OmniDrive:
-    """Omnidirectional drive with 3 omniwheels. Assumes positive motor outputs go clockwise and positive angle goes clockwise"""
+    """Omnidirectional drive with 3 omniwheels.
     
-    def __init__(self, ard, motorL=(1,0), motorR=(1,1), motorB=(2,0)):
+    Assumes positive motor outputs go clockwise and positive angle goes clockwise"""
+    
+    def __init__(self, ard, motorL=params.omni_l, motorR=params.omni_r, motorB=params.omni_b):
         self.motorL = arduino.Motor(ard, motorL) # front left
         self.motorR = arduino.Motor(ard, motorR) # front right
         self.motorB = arduino.Motor(ard, motorB) # back

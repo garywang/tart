@@ -32,11 +32,11 @@ class Map(threading.Thread):
             self.debug_thread.start()
         
         pos = self.get_pos()
-
+        
         while self.running:
             if not self.vis_pipe.poll(): # no updates from vision
                 continue
-
+            
             data = self.vis_pipe.recv()
             if self.debug:
                 print data
