@@ -151,14 +151,13 @@ class VisionThread(threading.Thread): #Not used
 
 class VisionProcess(multiprocessing.Process):
 
-    def __init__(self, pipe, cam_info=None, debug=params.vision_debug):
+    def __init__(self, pipe, debug=params.vision_debug):
         """Initializes the vision process.
 
         cam_info is a CameraInfo object, used to initialize the camera's physical location
         pipe is used to communicate with the other process
         debug enables the debug mode"""
         multiprocessing.Process.__init__(self)
-        self.cam_info=cam_info
         self.pipe=pipe
         self.debug=debug
         self.colors=None
@@ -167,7 +166,7 @@ class VisionProcess(multiprocessing.Process):
     
     def run(self):
         read_color_data()
-        self.cam=WebCam(wrapped=True, info=self.cam_info)
+        self.cam=WebCam(wrapped=True)
         if self.debug:
             self.debug_thread.start()
         try:
