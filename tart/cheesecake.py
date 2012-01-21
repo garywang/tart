@@ -38,4 +38,7 @@ if __name__ == "__main__":
         print "Ending Program"
     
     finally:
-        bot.stop()
+        try:
+            bot.stop()
+        except:
+            pass
