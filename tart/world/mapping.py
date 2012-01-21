@@ -137,6 +137,12 @@ class MapDisplayThread(threading.Thread):
         while self.running:
             cv.Rectangle(im, (0,0), (500,500), (255, 255, 255), cv.CV_FILLED)
             cv.Circle(im, self.get_pixel(self.map.get_pos()), 8, (0, 0, 0), cv.CV_FILLED)
+            cv.Line(im, self.get_pixel(self.map.get_abs_loc((0, -15))), \
+                        self.get_pixel(self.map.get_abs_loc((0, 15))), (255, 255, 255))
+            cv.Line(im, self.get_pixel(self.map.get_abs_loc((0, 15))), \
+                        self.get_pixel(self.map.get_abs_loc((15, 0))), (255, 255, 255))
+            cv.Line(im, self.get_pixel(self.map.get_abs_loc((0, 15))), \
+                        self.get_pixel(self.map.get_abs_loc((-15, 0))), (255, 255, 255))
             for ball in self.map.memorized_balls:
                 cv.Circle(im, self.get_pixel(ball), 2, (0, 0, 155), cv.CV_FILLED)
             cur_ball=self.map.get_visible_ball() or self.map.get_memorized_ball()
