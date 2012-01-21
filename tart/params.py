@@ -28,7 +28,7 @@ odometry_interval=0.04
 #Show map on screen
 mapping_debug=False
 #Balls within this angle are forgotten if not in current image
-mapping_mem_width=0.3
+mapping_mem_width=0.4
 
 #Print state names
 state_debug=False
