@@ -84,7 +84,7 @@ class ExploreState(State):
     """Go somewhere else so it can see some balls"""
     
     def step(self):
-        if self.map.get_closest_ball():
+        if self.map.get_visible_ball():
             return ApproachState()
         if time.time()-self.start_time>params.state_explore_timeout:
             return ScanState()
