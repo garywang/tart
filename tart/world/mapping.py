@@ -133,7 +133,7 @@ class MapDisplayThread(threading.Thread):
     
     def run(self):
         self.running=True
-        im=v.CreateImage((500, 500), cv.IPL_DEPTH_8U, 3)
+        im=cv.CreateImage((500, 500), cv.IPL_DEPTH_8U, 3)
         while self.running:
             cv.Rectangle(im, (0,0), (500,500), (255, 255, 255), cv.CV_FILLED)
             cv.Circle(im, self.get_pixel(self.map.get_pos()), 8, (0, 0, 0), cv.CV_FILLED)
