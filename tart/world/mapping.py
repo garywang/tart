@@ -60,7 +60,7 @@ class Map(threading.Thread):
         else:
             self.closest_ball=balls[0]
         for ball in self.memorized_balls:
-            if math.fabs(self.get_angle(self.get_vector_to(loc=ball, rel=pos))) > 0.3:
+            if math.fabs(self.get_angle(self.get_vector_to(loc=ball, rel=pos))) > params.mapping_mem_width:
                 balls.append(ball)
         self.memorized_balls=balls
         if self.debug:
