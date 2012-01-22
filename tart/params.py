@@ -7,7 +7,7 @@ from tart.world.trig import CameraInfo
 #Use WrappedCamera
 webcam_wrapped=True
 #Physical information about camera
-webcam_info=CameraInfo(cam_height=29., height_angle=0.70, width_angle=0.93, min_dist=28.)
+webcam_info=CameraInfo(cam_height=32., height_angle=0.70, width_angle=0.93, min_dist=31.)
 #Camera number (0 or 1)
 webcam_num=1
 
