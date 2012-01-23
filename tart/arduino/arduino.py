@@ -1,8 +1,10 @@
-import serial, time, threading, thread, math
+import serial, time, threading, thread, math, sys
+sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
+from tart import params
 
 class ArduinoThread(threading.Thread):
     
-    def __init__(self, debug=False):
+    def __init__(self, debug=params.arduino_debug):
         threading.Thread.__init__(self)
         self.commands = {}
         self.responses = {}

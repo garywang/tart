@@ -26,7 +26,7 @@ odometry_radius=15.5
 odometry_interval=0.04
 
 #Show map on screen
-mapping_debug=False
+mapping_debug=True
 #Balls within this angle are forgotten if not in current image
 mapping_mem_width=0.4
 
@@ -55,6 +55,10 @@ drive_drive_kp=100
 drive_rotate_kp=100
 
 #Motor controller and motor numbers of omniwheels
-omni_l=(1, 0)
-omni_r=(1, 1)
-omni_b=(2, 0)
+omni_l=(2, 0)
+omni_r=(2, 1)
+omni_b=(1, 0)
+
+#Print commands sent/received from Arduino
+arduino_debug=False
+
