@@ -6,13 +6,15 @@ from tart.actuators import drive
 if __name__=="__main__":
     try:
         ard = arduino.Arduino(debug=True)
-        dt = drive.SimpleDrive(ard)
+        dt = drive.SimpleDrive(ard, (2,0), (2,1))
 
         ard.start()
         assert ard.waitReady()
 
         dt.setMotors(127, 127)
-        time.sleep(2)
+        time.sleep(10)
+        dt.setMotors(-127,-127)
+        time.sleep(10)
 
         dt.setMotors(0, 0)
 
