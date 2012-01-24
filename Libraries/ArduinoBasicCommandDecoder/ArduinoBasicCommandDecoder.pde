@@ -115,15 +115,10 @@ void moveMotor(){
       else if (num==1 && sign=='-'){
         m.motor1Reverse(val);
       }
-      Serial.print(controller);
-      Serial.print(num);
-      Serial.print(sign);
-      Serial.println(val);
+      Serial.println(m.getError());
   }
   else { // motor does not exist
-    Serial.print(controller);
-    Serial.print(num);
-    Serial.println(val);
+    Serial.println(0);
   }
 }
 //---------------
