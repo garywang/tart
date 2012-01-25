@@ -17,6 +17,7 @@ class Map(threading.Thread):
             self.odometry = odometry.OdometryThread()
         self.closest_ball = None
         self.memorized_balls = []
+        self.memorized_walls = []
         self.debug = debug
         if self.debug:
             self.debug_thread=MapDisplayThread(self)
@@ -35,6 +36,7 @@ class Map(threading.Thread):
         
         while self.running:
             if not self.vis_pipe.poll(): # no updates from vision
+                time.sleep(0)
                 continue
             
             data = self.vis_pipe.recv()
@@ -42,6 +44,7 @@ class Map(threading.Thread):
                 print data
             
             self.update_balls(pos, data["balls"])
+            self.update_walls(pos, data["walls"])
             pos = self.get_pos()
     
     def stop(self):
@@ -62,9 +65,18 @@ class Map(threading.Thread):
         for ball in self.memorized_balls:
             if math.fabs(self.get_angle(self.get_vector_to(loc=ball, rel=pos))) > params.mapping_mem_width:
                 balls.append(ball)
-        self.memorized_balls=balls
+        self.memorized_balls=balls[0:100]
         if self.debug:
             print str(len(self.memorized_balls))+" memorized balls"
+    
+    def update_walls(self, pos, walls):
+        walls=[self.get_abs_loc(vec=wall, rel=pos) for wall in walls]
+        for wall in self.memorized_walls:
+            if math.fabs(self.get_angle(self.get_vector_to(loc=wall, rel=pos))) > params.mapping_mem_width:
+                walls.append(wall)
+        self.memorized_walls=walls[0:100]
+        if self.debug:
+            print str(len(self.memorized_walls))+" memorized walls"
     
     def get_pos(self):
         """Get current position (x, y, theta)"""
@@ -123,6 +135,17 @@ class Map(threading.Thread):
             if math.fabs(self.get_angle(v))<best_angle:
                 best_angle=math.fabs(self.get_angle(v))
                 best=ball
+        return best
+    
+    def get_memorized_wall(self):
+        """Return memorized wall with shortest distance to current position"""
+        best=None
+        best_dist=10000000.
+        for wall in self.memorized_walls:
+            v = self.get_vector_to(wall)
+            if self.get_length(v)<best_dist:
+                best_dist=self.get_length(v)
+                best=wall
         return best
 
 class MapDisplayThread(threading.Thread):
