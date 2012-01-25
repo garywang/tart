@@ -51,6 +51,8 @@ class RememberState(State):
     """Turn toward a ball that was seen before"""
     
     def step(self):
+        if robot.get_time()>params.state_approach_yellow_time:
+            return ScanState()
         if self.map.get_visible_ball():
             return ApproachState()
         ball=self.map.get_memorized_ball()
@@ -63,6 +65,8 @@ class ApproachState(State):
     """Approaches a ball."""
     
     def step(self):
+        if robot.get_time()>params.state_approach_yellow_time:
+            return ScanState()
         ball=self.map.get_visible_ball()
         if ball is None:
             return RememberState()
