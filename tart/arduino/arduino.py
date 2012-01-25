@@ -52,7 +52,7 @@ class ArduinoThread(threading.Thread):
             # write command
             self.port.write(command)
             if self.debug:
-                print "Sent:", command
+                print "Sent:", repr(command)
             # block for response (don't flood the arduino with commands)
             response = self.port.readline().strip()
             if not response:
@@ -61,7 +61,7 @@ class ArduinoThread(threading.Thread):
                 break
             self.responses[ID] = response
             if self.debug:
-                print "Received:", response
+                print "Received:", repr(response)
             time.sleep(0)
         self.lock.release()
     
@@ -116,7 +116,7 @@ class Servo:
     def __init__(self, _arduino, _port):
         self.arduino = _arduino
         self.ID = "S{port:02d}".format(port=_port)
-        self.arduino.addCommand(self.ID, 0, False)
+        self.arduino.addCommand(self.ID, "{ID}000".format(ID=self.ID), False)
 
     def setAngle(self, angle):
         command = "{ID}{angle:03d}".format(ID=self.ID, angle=angle)
