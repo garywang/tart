@@ -2,8 +2,8 @@
 #include <CompactQik2s9v1.h>
 #include <NewSoftSerial.h>
 
-#define rxPin 1
-#define txPin 0
+#define rxPin 0
+#define txPin 1
 #define rxPin1 19
 #define txPin1 18
 #define rxPin2 17
