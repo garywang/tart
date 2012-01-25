@@ -91,8 +91,8 @@ void moveServo(){
   int angle = getData(3);
   servo.attach(port);
   servo.write(angle);
-  angle = servo.read(angle);
-  Serial.println(angle);
+  int value = digitalRead(port);
+  Serial.println(value);
 }
 //----------------
 void moveMotor(){     
