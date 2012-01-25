@@ -46,6 +46,13 @@ state_capture_timeout=4
 state_capture_exit_dist=5
 #Time, in seconds, that robot stays in ExploreState
 state_explore_timeout=5
+#Time, in seconds, after which the robot will move closer to the yellow wall
+#if it can't find a ball
+state_explore_yellow_time=120
+#Distance, in cm, from the yellow wall that the robot moves to in FindYellowState
+state_explore_yellow_dist=150
+#Time, in seconds, after which the robot will try to enter ApproachYellowState
+state_approach_yellow_time=150
 
 #Print target of driving
 drive_debug=False

@@ -30,9 +30,18 @@ class ScanState(State):
         self.angle_duration = random.uniform(2*math.pi, 2*math.pi+params.state_scan_angle_max)
     
     def step(self):
-        if self.map.get_visible_ball(): # sees a ball
+        if robot.get_time()>params.state_approach_yellow_time:
+            if self.map.get_memorized_wall():
+                return ApproachYellowState()
+        elif self.map.get_visible_ball(): # sees a ball
             return ApproachState()
+        
         if math.fabs(self.map.get_pos()[2] - self.start_angle) > self.angle_duration:
+            if robot.get_time()>params.state_find_yellow_time:
+                wall=self.map.get_memorized_wall()
+                if wall is not None and \
+                        self.map.get_length(self.map.get_vector_to(wall))>params.state_find_yellow_dist:
+                    return ExploreYellowState()
             return ExploreState()
         
         self.drive.rotate(self.dir*params.state_scan_speed)
@@ -89,4 +98,46 @@ class ExploreState(State):
         if time.time()-self.start_time>params.state_explore_timeout:
             return ScanState()
         self.drive.forward()
+        return self
+
+class ExploreYellowState(State):
+    """Go within some distance of the yellow wall"""
+    
+    def step(self):
+        if self.map.get_visible_ball():
+            return ApproachState()
+        if time.time()-self.start_time>params.state_explore_timeout:
+            return ScanState()
+        wall=self.map.get_memorized_wall()
+        if wall is not None and \
+                self.map.get_length(self.map.get_vector_to(wall))>2*params.state_find_yellow_dist/3:
+            self.drive.drive_to_point(wall)
+            return self
+        return ScanState()
+
+class ApproachYellowState(State):
+    """Approach yellow wall"""
+    
+    def step(self):
+        wall=self.map.get_memorized_wall()
+        if wall is None:
+            return ScanState()
+        vec=self.map.get_vector_to(wall)
+        if vec[1]<params.state_capture_dist:
+            if math.fabs(math.atan2(vec[1], vec[0])-math.pi/2)<params.state_capture_max_angle:
+                return CaptureYellowState(wall)
+            self.drive.rotate_toward_point(wall)
+        else:
+            self.drive.drive_to_point(wall)
+        return self
+
+class CaptureYellowState(State):
+    """Drive up to yellow wall"""
+    def __init__(self, wall):
+        State.__init__(self)
+        self.wall = wall
+    
+    def step(self):
+        self.drive.drive_to_point(self.wall)
+        #TODO: check bump sensors, launch catapult
         return self
