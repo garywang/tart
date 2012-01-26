@@ -15,7 +15,7 @@ if __name__ == "__main__":
                 motor.setValue(int(val))
             return setVal
         
-        for i in range(1, 4):
+        for i in range(0, 4):
             for j in range(2):
                 motor=arduino.Motor(ard, (i, j))
                 Tkinter.Label(root, text=str(i)+str(j)) \

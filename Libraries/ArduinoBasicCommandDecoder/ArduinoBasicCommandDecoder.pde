@@ -91,7 +91,8 @@ void moveServo(){
   int angle = getData(3);
   servo.attach(port);
   servo.write(angle);
-  Serial.println(0);
+  int value = analogRead(port);
+  Serial.println(value);
 }
 //----------------
 void moveMotor(){     
@@ -115,7 +116,8 @@ void moveMotor(){
       else if (num==1 && sign=='-'){
         m.motor1Reverse(val);
       }
-      Serial.println(m.getError());
+      int err = m.getError();
+      Serial.println(err);
   }
   else { // motor does not exist
     Serial.println(0);
