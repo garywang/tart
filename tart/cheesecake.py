@@ -4,6 +4,7 @@ from tart.arduino import arduino
 from tart.logic import state_machine
 from tart.world import mapping
 from tart.control import pidrive
+from tart.sensors import sensor
 
 class Cheesecake:
     def __init__(self):
@@ -16,7 +17,7 @@ class Cheesecake:
         self.ard.start()
         self.map.start()
         assert self.ard.waitReady()
-        button=BumpSensor(ard, 8)
+        button=sensor.BumpSensor(ard, 8)
         while not button.pressed():
             time.sleep(0.1)
         self.start_time = time.time()
