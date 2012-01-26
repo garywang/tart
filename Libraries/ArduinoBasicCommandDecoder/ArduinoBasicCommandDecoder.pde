@@ -15,6 +15,7 @@
 #define analogChar 'A'
 #define motorChar 'M'
 #define digitalChar 'D'
+#define transistorChar 'T'
 #define commandLen 6
 
 Servo servo;
@@ -81,6 +82,11 @@ void loop()
         getDigital();
         break;
     
+      //If it's a transistor command (digital output):
+      //T[port][1/0]
+      case transistorChar:
+        putDigital();
+        break;
   }
   
 }
@@ -136,6 +142,14 @@ void getDigital(){
   int digitalData = digitalRead(port);
   
   Serial.println(digitalData);
+}
+//---------------
+void putDigital(){
+  int port = getData(2);
+  int val = getData(1);
+  digitalWrite(port, val);
+
+  Serial.println(val);
 }
 //----------------
 int getData(int len)

@@ -121,7 +121,7 @@ class Servo:
         self.ID = "S{port:02d}".format(port=_port)
         self.arduino.addCommand(self.ID, "{ID}000".format(ID=self.ID), False)
 
-    def setAngle(self, angle):
+    def setAngle(self, angle): # value between 0 and 180
         command = "{ID}{angle:03d}".format(ID=self.ID, angle=angle)
         self.arduino.updateCommand(self.ID, command)
 
@@ -131,7 +131,7 @@ class Motor:
         self.ID = "M{controller:01d}{num:01d}".format(controller=_id[0], num=_id[1])
         self.arduino.addCommand(self.ID, "{ID}+000".format(ID=self.ID), False)
 
-    def setValue(self, value): # Value between -127 and 127
+    def setValue(self, value): # value between -127 and 127
         val=int(math.floor(value+0.5))
         if val>127: val=127
         if val<-127: val=-127
@@ -159,6 +159,15 @@ class DigitalSensor:
         value = self.arduino.getResponse(self.ID)
         return int(value)
 
+class Transistor:
+    def __init__(self, _arduino, _port):
+        self.arduino = _arduino
+        self.ID = "T{port:02d}".format(port=_port)
+        self.arduino.addCommand(self.ID, "{ID}0".format(ID=self.ID), False)
+
+    def setValue(self, value): # value: 0 or 1
+        command = "{ID}{value:01d}".format(ID=self.ID, value=value) 
+        self.arduino.updateCommand(self.ID, command)
 
 if __name__=="__main__":
     try:
