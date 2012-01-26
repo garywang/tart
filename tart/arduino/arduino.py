@@ -125,6 +125,19 @@ class Servo:
         command = "{ID}{angle:03d}".format(ID=self.ID, angle=angle)
         self.arduino.updateCommand(self.ID, command)
 
+class PWM:
+    def __init__(self, _arduino, _port):
+        self.arduino = _arduino
+        self.ID = "P{port:02d}".format(port=_port)
+        self.arduino.addCommand(self.ID, "{ID}0000".format(ID=self.ID), False)
+
+    def setValue(self, value): # value between 0 and 1
+        val = int(math.floor(value/10000.))
+        if val>9999: val = 9999
+        if val<0: val = 0
+        command = "{ID}{value:04d}".format(ID=self.ID, value=val)
+        self.arduino.updateCommand(self.ID, command)
+
 class Motor:
     def __init__(self, _arduino, _id):
         self.arduino = _arduino
@@ -159,10 +172,10 @@ class DigitalSensor:
         value = self.arduino.getResponse(self.ID)
         return int(value)
 
-class Transistor:
+class DigitalOut:
     def __init__(self, _arduino, _port):
         self.arduino = _arduino
-        self.ID = "T{port:02d}".format(port=_port)
+        self.ID = "O{port:02d}".format(port=_port)
         self.arduino.addCommand(self.ID, "{ID}0".format(ID=self.ID), False)
 
     def setValue(self, value): # value: 0 or 1

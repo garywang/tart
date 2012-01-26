@@ -15,7 +15,8 @@
 #define analogChar 'A'
 #define motorChar 'M'
 #define digitalChar 'D'
-#define transistorChar 'T'
+#define doutChar 'O'
+#define pwmChar 'P'
 #define commandLen 6
 
 Servo servo;
@@ -81,11 +82,17 @@ void loop()
       case digitalChar:
         getDigital();
         break;
-    
+
       //If it's a transistor command (digital output):
-      //T[port][1/0]
-      case transistorChar:
+      //O[port][1/0]
+      case doutChar:
         putDigital();
+        break;
+    
+      //If it's a PWM command:
+      //P[port][val]
+      case pwmChar:
+        putPWM();
         break;
   }
   
@@ -99,6 +106,15 @@ void moveServo(){
   servo.write(angle);
   int value = servo.read();
   Serial.println(value);
+}
+//----------------
+void putPWM(){ // value between 0 and 9999
+  int port = getData(2);
+  int val = getData(4);
+  servo.attach(port, 0, 20000);
+  servo.write(2*val);
+
+  Serial.println(val);
 }
 //----------------
 void moveMotor(){     
