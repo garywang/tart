@@ -211,15 +211,17 @@ class VisionProcess(multiprocessing.Process):
     def find_walls(self, numpy.ndarray[numpy.int8_t, ndim=2] colors, im, numpy.int8_t color=YELLOW):
         cdef int height=colors.shape[0], width=colors.shape[1]
         cdef int i, j, i0
+        cdef double dx, dy
         cdef numpy.int8_t blue=BLUE
         
         walls=[]
         
-        for j in range(width):
+        for j in range(0, width, 10):
             i=height-1
             while i>=0 and colors[i, j]!=color: i-=1
             i0=i
             while i>=0 and colors[i, j]==color: i-=1
+            while i>=0 and colors[i, j]!=blue: i-=1
             if i<0 or colors[i, j]!=blue:
                 continue
             while i>=0 and colors[i, j]==blue: i-=1

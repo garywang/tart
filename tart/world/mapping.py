@@ -168,6 +168,8 @@ class MapDisplayThread(threading.Thread):
                         self.get_pixel(self.map.get_abs_loc((-15, 0))), (255, 255, 255))
             for ball in self.map.memorized_balls:
                 cv.Circle(im, self.get_pixel(ball), 2, (0, 0, 155), cv.CV_FILLED)
+            for wall in self.map.memorized_walls:
+                cv.Circle(im, self.get_pixel(wall), 2, (0, 255, 255), cv.CV_FILLED)
             cur_ball=self.map.get_visible_ball() or self.map.get_memorized_ball()
             if cur_ball is not None:
                 cv.Circle(im, self.get_pixel(cur_ball), 2, (0, 0, 255), cv.CV_FILLED)

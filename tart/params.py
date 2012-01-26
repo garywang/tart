@@ -21,7 +21,7 @@ mouse_scale=160.
 odometry_num1=1
 odometry_num2=2
 #Half the distance between the mice, in cm
-odometry_radius=15.5
+odometry_radius=11.
 #Time, in seconds, over which to calculate mouse velocities
 odometry_interval=0.04
 

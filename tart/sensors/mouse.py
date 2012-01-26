@@ -28,7 +28,7 @@ class Mouse(threading.Thread):
     
     def get_delta(self):
         self.lock.acquire()
-        res=(self.sumx, self.sumy)
+        res=(-self.sumx, -self.sumy)
         self.sumx=0
         self.sumy=0
         self.lock.release()
