@@ -175,16 +175,19 @@ if __name__=="__main__":
         motor = Motor(ard, (1,0))
         #sensor = AnalogSensor(ard, 0)
         #servo = Servo(ard, 8)
+        #transistor = Transistor(ard, 12)
 
         ard.start()
         assert ard.waitReady()
 
         motor.setValue(127)
+        #transistor.setValue(1)
         for i in range(100):
             #print sensor.getValue()
             #servo.setAngle(i)
             time.sleep(0.1)
         #servo.setAngle(0)
+        #transistor.setValue(0)
         time.sleep(1)
         
     #This is so that when you hit ctrl-C in the terminal, all the arduino threads close. You can do something similar with threads in your program.
