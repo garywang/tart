@@ -1,4 +1,4 @@
-import arduino
+from tart.arduino import arduino
 
 class BumpSensor(arduino.DigitalSensor):
     """Limit switch wrapper class"""
