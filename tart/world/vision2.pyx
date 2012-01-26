@@ -215,11 +215,12 @@ class VisionProcess(multiprocessing.Process):
         
         walls=[]
         
-        for j in range(width):
+        for j in range(0, width, 10):
             i=height-1
             while i>=0 and colors[i, j]!=color: i-=1
             i0=i
             while i>=0 and colors[i, j]==color: i-=1
+            while i>=0 and colors[i, j]!=blue: i-=1
             if i<0 or colors[i, j]!=blue:
                 continue
             while i>=0 and colors[i, j]==blue: i-=1
