@@ -5,4 +5,4 @@ class BumpSensor(arduino.DigitalSensor):
     
     def pressed(self):
         """Returns True if pressed, False otherwise"""
-        return self.getValue() == 1
+        return self.getValue() == 0

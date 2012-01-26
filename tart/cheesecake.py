@@ -19,7 +19,7 @@ class Cheesecake:
         assert self.ard.waitReady()
         button=sensor.BumpSensor(self.ard, 8)
         while not button.pressed():
-            time.sleep(0.1)
+            time.sleep(0.01)
         self.start_time = time.time()
         self.sm.start()
     
