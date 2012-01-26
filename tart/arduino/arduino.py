@@ -49,20 +49,23 @@ class ArduinoThread(threading.Thread):
     def loopCommands(self):
         self.lock.acquire()
         for ID, command in self.commands.iteritems():
-            # write command
-            self.port.write(command)
-            if self.debug:
-                print "Sent:", repr(command)
-            # block for response (don't flood the arduino with commands)
-            response = self.port.readline().strip()
-            if not response:
-                print "Response timeout"
-                self.stop()
-                break
-            self.responses[ID] = response
-            if self.debug:
-                print "Received:", repr(response)
-            time.sleep(0)
+            if command is not None:
+                # write command
+                self.port.write(command)
+                if self.debug:
+                    print "Sent:", repr(command)
+                # block for response (don't flood the arduino with commands)
+                response = self.port.readline().strip()
+                if not response:
+                    print "Response timeout"
+                    self.stop()
+                    break
+                self.responses[ID] = response
+                if self.debug:
+                    print "Received:", repr(response)
+                if ID[0] == 'S':
+                    self.commands[ID] = None #Don't repeatedly send servo commands.
+                time.sleep(0)
         self.lock.release()
     
     #This should not be called while the thread is still running
@@ -98,7 +101,7 @@ class ArduinoThread(threading.Thread):
             self.commands[ID] = command
         else:
             raise RuntimeError("attempted to update nonexistent command")
-    
+
     def getResponse(self, ID):
         if ID in self.responses:
             while self.responses[ID] is None: time.sleep(0.001) # Wait for value to update
@@ -162,6 +165,7 @@ if __name__=="__main__":
         ard = ArduinoThread(debug=True)
         motor = Motor(ard, (1,0))
         #sensor = AnalogSensor(ard, 0)
+        #servo = Servo(ard, 8)
 
         ard.start()
         assert ard.waitReady()
@@ -169,7 +173,10 @@ if __name__=="__main__":
         motor.setValue(127)
         for i in range(100):
             #print sensor.getValue()
+            #servo.setAngle(i)
             time.sleep(0.1)
+        #servo.setAngle(0)
+        time.sleep(1)
         
     #This is so that when you hit ctrl-C in the terminal, all the arduino threads close. You can do something similar with threads in your program.
     except KeyboardInterrupt:
