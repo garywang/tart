@@ -26,7 +26,7 @@ odometry_radius=11.
 odometry_interval=0.04
 
 #Show map on screen
-mapping_debug=True
+mapping_debug=False
 #Balls within this angle are forgotten if not in current image
 mapping_mem_width=0.4
 
@@ -55,16 +55,16 @@ state_explore_yellow_dist=150
 state_approach_yellow_time=150
 
 #Print target of driving
-drive_debug=False
+drive_debug=True
 #PID parameters for drive_to_point
 drive_drive_kp=100
 #PID parameters for rotate_toward_point
 drive_rotate_kp=100
 
 #Motor controller and motor numbers of omniwheels
-omni_l=(2, 0)
-omni_r=(2, 1)
-omni_b=(1, 0)
+omni_l=(1, 0)
+omni_r=(1, 1)
+omni_b=(22, 23, 2)
 
 #Print commands sent/received from Arduino
 arduino_debug=False
