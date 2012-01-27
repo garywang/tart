@@ -176,9 +176,9 @@ void putDigital(){
 }
 //---------------
 void configure(){
-  int controller = getData(1);
+  /*int controller = getData(1);
   int setting = getData(1);
-  s = mySerial[controller];
+  NewSoftSerial s = mySerial[controller];
   if (setting==-1)
   {
     s.write(0x83);
@@ -195,7 +195,8 @@ void configure(){
     s.write(0x2a);
     delay(10);
     Serial.println(s.read());
-  }
+  }*/
+  Serial.println("this doesn't work");
 }
   
 //----------------
