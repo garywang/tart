@@ -1,6 +1,7 @@
 import sys, time
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
 from tart.arduino import arduino
+from tart.actuators.motor import get_motor
 from math import radians, sin, cos, sqrt
 from tart import params
 
@@ -8,8 +9,8 @@ class SimpleDrive:
     """Simple drive class"""
     
     def __init__(self, ard, motorL=(1,0), motorR=(1,1)):
-        self.motorL = arduino.Motor(ard, motorL)
-        self.motorR = arduino.Motor(ard, motorR)
+        self.motorL = get_motor(ard, motorL)
+        self.motorR = get_motor(ard, motorR)
     
     def setMotors(self, left, right):
         self.motorL.setValue(left)
@@ -33,9 +34,9 @@ class OmniDrive:
     Assumes positive motor outputs go clockwise and positive angle goes clockwise"""
     
     def __init__(self, ard, motorL=params.omni_l, motorR=params.omni_r, motorB=params.omni_b):
-        self.motorL = arduino.Motor(ard, motorL) # front left
-        self.motorR = arduino.Motor(ard, motorR) # front right
-        self.motorB = arduino.Motor(ard, motorB) # back
+        self.motorL = get_motor(ard, motorL) # front left
+        self.motorR = get_motor(ard, motorR) # front right
+        self.motorB = get_motor(ard, motorB) # back
     
     def setMotors(self, left, right, back):
         self.motorL.setValue(left)
