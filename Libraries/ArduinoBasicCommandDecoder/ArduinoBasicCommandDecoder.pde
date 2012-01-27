@@ -17,6 +17,7 @@
 #define digitalChar 'D'
 #define doutChar 'O'
 #define pwmChar 'P'
+#define configChar 'C'
 #define commandLen 6
 
 Servo servo;
@@ -41,7 +42,7 @@ void setup()
   
   for (int i = 0; i < 4; i++)
   {
-    mySerial[i].begin(9600);
+    mySerial[i].begin(38400);
     mc[i].begin();
     mc[i].getError();
     mc[i].stopBothMotors();
@@ -93,6 +94,12 @@ void loop()
       //P[port][val]
       case pwmChar:
         putPWM();
+        break;
+
+      //Configure frequency
+      //C[controller][-1|setting]
+      case configChar:
+        configure();
         break;
   }
   
@@ -167,6 +174,30 @@ void putDigital(){
 
   Serial.println(val);
 }
+//---------------
+void configure(){
+  int controller = getData(1);
+  int setting = getData(1);
+  s = mySerial[controller];
+  if (setting==-1)
+  {
+    s.write(0x83);
+    s.write(0x01);
+    delay(10);
+    Serial.println(s.read());
+  }
+  else if (setting >= 0 && setting < 4)
+  {
+    s.write(0x84);
+    s.write(0x01);
+    s.write(setting);
+    s.write(0x55);
+    s.write(0x2a);
+    delay(10);
+    Serial.println(s.read());
+  }
+}
+  
 //----------------
 int getData(int len)
 //Collects data of the appropriate length and turns it into an integer
