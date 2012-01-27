@@ -132,7 +132,7 @@ class PWM:
         self.arduino.addCommand(self.ID, "{ID}0000".format(ID=self.ID), False)
 
     def setValue(self, value): # value between 0 and 1
-        val = int(math.floor(value/10000.))
+        val = int(math.floor(value*10000.))
         if val>9999: val = 9999
         if val<0: val = 0
         command = "{ID}{value:04d}".format(ID=self.ID, value=val)
