@@ -125,7 +125,7 @@ void putPWM(){ // value between 0 and 9999
   if(val==0)
     servos[port].detach();
   else{
-    if(!servos[port].attached)
+    if(!servos[port].attached())
       servos[port].attach(port, 0, 2000);
     servos[port].write(2*val/10);
   }
