@@ -62,8 +62,8 @@ drive_drive_kp=100
 drive_rotate_kp=100
 
 #Motor controller and motor numbers of omniwheels
-omni_l=(1, 0)
-omni_r=(1, 1)
+omni_l=(24, 25, 3)
+omni_r=(26, 27, 4)
 omni_b=(22, 23, 2)
 
 #Print commands sent/received from Arduino
