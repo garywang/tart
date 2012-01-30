@@ -118,10 +118,10 @@ void moveServo(){
 void putPWM(){ // value between 0 and 9999
   int port = getData(2);
   int val = getData(4);
-  servo.attach(port, 0, 20000);
-  servo.write(2*val);
+  servo.attach(port, 0, 2000);
+  servo.write(2*val/10);
 
-  Serial.println(val);
+  Serial.println(servo.readMicroseconds());
 }
 //----------------
 void moveMotor(){     
@@ -170,6 +170,7 @@ void getDigital(){
 void putDigital(){
   int port = getData(2);
   int val = getData(1);
+  pinMode(port, OUTPUT);
   digitalWrite(port, val);
 
   Serial.println(val);
