@@ -20,7 +20,7 @@
 #define configChar 'C'
 #define commandLen 6
 
-Servo servo;
+Servo servo, servos[14];
 NewSoftSerial mySerial[4] = {
     NewSoftSerial(rxPin, txPin),
     NewSoftSerial(rxPin1, txPin1),
@@ -118,15 +118,19 @@ void moveServo(){
 void putPWM(){ // value between 0 and 9999
   int port = getData(2);
   int val = getData(4);
+  if(port<2 || port>13){
+    Serial.println("Port out of bounds");
+    return;
+  }
   if(val==0)
-    servo.detach();
+    servos[port].detach();
   else{
-    if(!servo.attached)
-      servo.attach(port, 0, 2000);
-    servo.write(2*val/10);
+    if(!servos[port].attached)
+      servos[port].attach(port, 0, 2000);
+    servos[port].write(2*val/10);
   }
   
-  Serial.println(servo.readMicroseconds());
+  Serial.println(servos[port].readMicroseconds());
 }
 //----------------
 void moveMotor(){     
