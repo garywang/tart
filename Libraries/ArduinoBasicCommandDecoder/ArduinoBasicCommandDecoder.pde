@@ -118,9 +118,14 @@ void moveServo(){
 void putPWM(){ // value between 0 and 9999
   int port = getData(2);
   int val = getData(4);
-  servo.attach(port, 0, 2000);
-  servo.write(2*val/10);
-
+  if(val==0)
+    servo.detach();
+  else{
+    if(!servo.attached)
+      servo.attach(port, 0, 2000);
+    servo.write(2*val/10);
+  }
+  
   Serial.println(servo.readMicroseconds());
 }
 //----------------
