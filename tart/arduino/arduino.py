@@ -71,6 +71,7 @@ class ArduinoThread(threading.Thread):
     #This should not be called while the thread is still running
     def close(self):
         if self.port and self.port.isOpen():
+            self.loopCommands()
             self.lock.acquire()
             self.port.flush()
             self.port.close()

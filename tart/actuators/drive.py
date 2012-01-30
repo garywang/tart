@@ -62,6 +62,9 @@ class OmniDrive:
             r = -127
         b = rotation
         self.setMotors(l, r, b)
+    
+    def stop(self):
+        self.setMotors(0, 0, 0)
 
 if __name__ == "__main__":
     try:
@@ -77,4 +80,6 @@ if __name__ == "__main__":
         time.sleep(100)
         
     finally:
+        dt.stop()
         ard.stop()
+
