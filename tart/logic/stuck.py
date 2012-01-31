@@ -2,30 +2,34 @@ import time, math, random, sys
 from collections import deque
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
 from tart import params
-from tart.logic.states import State, robot, ExploreState
+from tart.logic.states import State, ExploreState
+robot = None
 
 class StuckDetector:
     
-    def __init__(self, map):
+    def __init__(self, _robot):
         #self.long_que=deque()
         self.short_que=deque()
-        self.map=map
+        self.map=_robot.map
+        self.robot=_robot
+        global robot
+        robot=_robot
     
     def detect(self):
         pos=self.map.get_pos()
         #self.long_que.append((time.time(), pos))
         self.short_que.append((time.time(), pos))
         last=None
-        print len(short_que)
-        while time.time()-short_que[0][0]>2.:
-            last=short_que.popleft()
+        print len(self.short_que)
+        while time.time()-self.short_que[0][0]>2.:
+            last=self.short_que.popleft()
         if last is not None:
             d=self.get_delta(last[1])
             print d
             if d[0]<2. and d[1]<math.pi/12:
                 return BackUpState()
         
-        if time.time()-robot.sm.state.start_time()>20.:
+        if time.time()-robot.sm.state.start_time>20.:
             return RotateState()
         
         return False
@@ -57,13 +61,13 @@ class RotateState(State):
     def __init__(self):
         State.__init__(self)
         self.dir=random.choice([-1, 1])
-        self.timeout=random.uniform(0.5, 2)
+        self.timeout=random.uniform(0.2, 1)
     
     def step(self):
         self.drive.rotate(self.dir*127)
         if time.time()-self.start_time<self.timeout:
             return self
-        return FowardState()
+        return ForwardState()
 
 class ForwardState(State):
     
