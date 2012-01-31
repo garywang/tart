@@ -31,7 +31,7 @@ mapping_debug=False
 mapping_mem_width=0.4
 
 #Print state names
-state_debug=False
+state_debug=True
 #Speed robot turns at when scanning for balls
 state_scan_speed=50
 #Maximum extra angle that robot rotates after completing full circle
@@ -62,9 +62,9 @@ drive_drive_kp=100
 drive_rotate_kp=100
 
 #Motor controller and motor numbers of omniwheels
-omni_b=(24, 25, 3)
-omni_r=(26, 27, 4)
-omni_l=(22, 23, 2)
+omni_r=(24, 25, 3)
+omni_l=(26, 27, 4)
+omni_b=(22, 23, 2)
 
 #Print commands sent/received from Arduino
 arduino_debug=False

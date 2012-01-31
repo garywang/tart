@@ -46,7 +46,7 @@ class ScanState(State):
             return ExploreState()
         
         self.drive.rotate(self.dir*params.state_scan_speed)
-        return self or stuck_detect.detect()
+        return stuck_detect.detect() or self
 
 class RememberState(State):
     """Turn toward a ball that was seen before"""
@@ -60,7 +60,7 @@ class RememberState(State):
         if ball is None:
             return ScanState()
         self.drive.rotate_toward_point(ball)
-        return self or stuck_detect.detect()
+        return stuck_detect.detect() or self
 
 class ApproachState(State):
     """Approaches a ball."""
@@ -78,7 +78,7 @@ class ApproachState(State):
             self.drive.rotate_toward_point(ball)
         else:
             self.drive.drive_to_point(ball)
-        return self or stuck_detect.detect()
+        return stuck_detect.detect() or self
 
 class CaptureState(State):
     """Captures a ball"""
@@ -92,7 +92,7 @@ class CaptureState(State):
                 time.time()-self.start_time>params.state_capture_timeout:
             return RememberState()
         else:
-            return self or stuck_detect.detect()
+            return stuck_detect.detect() or self
 
 class ExploreState(State):
     """Go somewhere else so it can see some balls"""
@@ -103,7 +103,7 @@ class ExploreState(State):
         if time.time()-self.start_time>params.state_explore_timeout:
             return ScanState()
         self.drive.forward()
-        return self or stuck_detect.detect()
+        return stuck_detect.detect() or self
 
 class ExploreYellowState(State):
     """Go within some distance of the yellow wall"""
@@ -117,7 +117,7 @@ class ExploreYellowState(State):
         if wall is not None and \
                 self.map.get_length(self.map.get_vector_to(wall))>2*params.state_find_yellow_dist/3:
             self.drive.drive_to_point(wall)
-            return self or stuck_detect.detect()
+            return stuck_detect.detect() or self
         return ScanState()
 
 class ApproachYellowState(State):
@@ -134,7 +134,7 @@ class ApproachYellowState(State):
             self.drive.rotate_toward_point(wall)
         else:
             self.drive.drive_to_point(wall)
-        return self or stuck_detect.detect()
+        return stuck_detect.detect() or self
 
 class CaptureYellowState(State):
     """Drive up to yellow wall"""

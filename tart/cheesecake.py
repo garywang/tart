@@ -20,7 +20,7 @@ class Cheesecake:
         self.map.start()
         assert self.ard.waitReady()
         button=sensor.BumpSensor(self.ard, 8)
-        while not button.pressed():
+        while button.pressed():
             time.sleep(0.01)
         self.start_time = time.time()
         self.roller.setValue(127)

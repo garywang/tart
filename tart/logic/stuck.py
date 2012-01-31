@@ -16,10 +16,12 @@ class StuckDetector:
         #self.long_que.append((time.time(), pos))
         self.short_que.append((time.time(), pos))
         last=None
+        print len(short_que)
         while time.time()-short_que[0][0]>2.:
             last=short_que.popleft()
         if last is not None:
             d=self.get_delta(last[1])
+            print d
             if d[0]<2. and d[1]<math.pi/12:
                 return BackUpState()
         
