@@ -1,7 +1,8 @@
 import time, math, random, sys
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
 from tart import params
-robot = None, stuck_detect = None
+robot = None
+stuck_detect = None
 
 class State:
     """Base class for state machine states

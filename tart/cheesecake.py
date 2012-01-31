@@ -30,6 +30,7 @@ class Cheesecake:
         self.sm.stop()
         self.map.stop()
         self.drive.stop()
+        self.roller.setValue(0)
         self.ard.stop()
 
     def get_time(self):

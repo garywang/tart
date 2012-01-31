@@ -75,8 +75,8 @@ if __name__ == "__main__":
         success = ard.waitReady()
         
         #dt.rotate(127)
-        dt.forward(0)
-        #dt.translate(127, 160)
+        #dt.forward(0)
+        dt.translate(127, 90)
         time.sleep(100)
         
     finally:
