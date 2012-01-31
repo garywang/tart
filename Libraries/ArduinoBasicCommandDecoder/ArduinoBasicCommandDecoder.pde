@@ -125,8 +125,10 @@ void putPWM(){ // value between 0 and 9999
   Servo *servo=&(servos[port-2]);
   Serial.print(servo->attached());
   Serial.print(port);
-  if(val==0)
+  if(val==0){
+    servo->write(0);
     servo->detach();
+  }
   else{
     if(!servo->attached())
       servo->attach(port, 0, 2000);
