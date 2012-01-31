@@ -7,7 +7,7 @@ from tart import params
 
 class Map(threading.Thread):
     
-    def __init__(self, odom=True, debug=params.mapping_debug):
+    def __init__(self, odom=params.mapping_odom, debug=params.mapping_debug):
         threading.Thread.__init__(self)
         #self.vis=vision.VisionThread(map=self)
         parent_conn, child_conn = multiprocessing.Pipe()
@@ -15,6 +15,8 @@ class Map(threading.Thread):
         self.vis_proc = vision.VisionProcess(child_conn)
         if odom:
             self.odometry = odometry.OdometryThread()
+        else:
+            self.odometry = None
         self.closest_ball = None
         self.memorized_balls = []
         self.memorized_walls = []
