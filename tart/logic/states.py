@@ -1,7 +1,7 @@
 import time, math, random, sys
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
 from tart import params
-robot = None
+robot = None, stuck_detect = None
 
 class State:
     """Base class for state machine states
@@ -16,7 +16,7 @@ class State:
     def step(self):
         """Run one iteration of the state, return the next state"""
         # stuff common to all states?
-        return self
+        return self or stuck_detect.detect()
 
 class ScanState(State):
     """Scan the field until we see a ball. Then enter ApproachState"""
@@ -45,7 +45,7 @@ class ScanState(State):
             return ExploreState()
         
         self.drive.rotate(self.dir*params.state_scan_speed)
-        return self
+        return self or stuck_detect.detect()
 
 class RememberState(State):
     """Turn toward a ball that was seen before"""
@@ -59,7 +59,7 @@ class RememberState(State):
         if ball is None:
             return ScanState()
         self.drive.rotate_toward_point(ball)
-        return self
+        return self or stuck_detect.detect()
 
 class ApproachState(State):
     """Approaches a ball."""
@@ -77,7 +77,7 @@ class ApproachState(State):
             self.drive.rotate_toward_point(ball)
         else:
             self.drive.drive_to_point(ball)
-        return self
+        return self or stuck_detect.detect()
 
 class CaptureState(State):
     """Captures a ball"""
@@ -91,7 +91,7 @@ class CaptureState(State):
                 time.time()-self.start_time>params.state_capture_timeout:
             return RememberState()
         else:
-            return self
+            return self or stuck_detect.detect()
 
 class ExploreState(State):
     """Go somewhere else so it can see some balls"""
@@ -102,7 +102,7 @@ class ExploreState(State):
         if time.time()-self.start_time>params.state_explore_timeout:
             return ScanState()
         self.drive.forward()
-        return self
+        return self or stuck_detect.detect()
 
 class ExploreYellowState(State):
     """Go within some distance of the yellow wall"""
@@ -116,7 +116,7 @@ class ExploreYellowState(State):
         if wall is not None and \
                 self.map.get_length(self.map.get_vector_to(wall))>2*params.state_find_yellow_dist/3:
             self.drive.drive_to_point(wall)
-            return self
+            return self or stuck_detect.detect()
         return ScanState()
 
 class ApproachYellowState(State):
@@ -133,7 +133,7 @@ class ApproachYellowState(State):
             self.drive.rotate_toward_point(wall)
         else:
             self.drive.drive_to_point(wall)
-        return self
+        return self or stuck_detect.detect()
 
 class CaptureYellowState(State):
     """Drive up to yellow wall"""
