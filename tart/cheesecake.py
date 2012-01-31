@@ -5,6 +5,7 @@ from tart.logic import state_machine
 from tart.world import mapping
 from tart.control import pidrive
 from tart.sensors import sensor
+from tart.actuators import motor
 
 class Cheesecake:
     def __init__(self):
@@ -12,6 +13,7 @@ class Cheesecake:
         self.map = mapping.Map()
         self.sm = state_machine.StateMachine(self)
         self.drive = pidrive.PIDriveController(self.ard, self.map)
+        self.roller = motor.get_motor(self.ard, (1, 0))
     
     def start(self):
         self.ard.start()
@@ -21,12 +23,14 @@ class Cheesecake:
         while not button.pressed():
             time.sleep(0.01)
         self.start_time = time.time()
+        self.roller.setValue(127)
         self.sm.start()
     
     def stop(self):
-        self.ard.stop()
-        self.map.stop()
         self.sm.stop()
+        self.map.stop()
+        self.drive.stop()
+        self.ard.stop()
 
     def get_time(self):
         return time.time() - self.start_time
