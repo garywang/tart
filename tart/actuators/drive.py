@@ -48,8 +48,8 @@ class OmniDrive:
     
     def translate(self, value, angle): # angle=0 is forward. this is mostly for theoretical purposes; in practice, will probably use something else for control
         rad = radians(angle)
-        l = int(value*(-0.5*sin(rad) + 0.866*cos(rad)))
-        r = int(value*(-0.5*sin(rad) - 0.866*cos(rad)))
+        l = int(value*(+0.5*sin(rad) + 0.866*cos(rad)))
+        r = int(value*(+0.5*sin(rad) - 0.866*cos(rad)))
         b = int(value*-sin(rad))
         self.setMotors(l, r, b)
     
@@ -74,9 +74,9 @@ if __name__ == "__main__":
         ard.start()
         success = ard.waitReady()
         
-        dt.rotate(127)
-        #dt.forward()
-        #dt.translate(50, 90)
+        #dt.rotate(127)
+        dt.forward(0)
+        #dt.translate(127, 160)
         time.sleep(100)
         
     finally:
