@@ -30,7 +30,7 @@ class StuckDetector:
                 return BackUpState()
         
         wall=self.map.get_closest_wall()
-        if wall is not None and self.map.get_length(self.map.get_vector_to(wall))<20.:
+        if wall is not None and self.map.get_length(self.map.get_vector_to(wall))<50.:
             return AvoidWallState(robot.sm.state)
         
         if time.time()-robot.sm.state.start_time>15.:
@@ -57,7 +57,7 @@ class AvoidWallState(State):
             return self.prev_state
         vec=self.map.get_vector_to(wall)
         self.drive.translate(127, math.degrees(math.atan2(-vec[1], -vec[0])))
-        if self.map.get_length(vec)>20.:
+        if self.map.get_length(vec)>50.:
             return self.prev_state
         return self
 
