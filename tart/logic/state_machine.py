@@ -10,7 +10,8 @@ class StateMachine(threading.Thread):
     def __init__(self, robot, debug=params.state_debug):
         threading.Thread.__init__(self)
         states.robot = robot
-        states.stuck_detect = stuck.StuckDetector(robot.map)
+        states.stuck_detect = stuck.StuckDetector(robot)
+        states.stuck_detect.robot = robot
         self.debug=debug
         self.running = False
         

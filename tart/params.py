@@ -9,7 +9,7 @@ webcam_wrapped=True
 #Physical information about camera
 webcam_info=CameraInfo(cam_height=32., height_angle=0.70, width_angle=0.93, min_dist=31.)
 #Camera number (0 or 1)
-webcam_num=1
+webcam_num=0
 
 #Show colored image from camera on screen
 vision_debug=False
@@ -18,17 +18,18 @@ vision_debug=False
 mouse_scale=160.
 
 #Mouse numbers (0, 1, or 2)
-odometry_num1=1
-odometry_num2=2
+odometry_num1=2
+odometry_num2=1
 #Half the distance between the mice, in cm
 odometry_radius=10.5
 #Time, in seconds, over which to calculate mouse velocities
 odometry_interval=0.04
 
 #Show map on screen
-mapping_debug=False
+mapping_debug=True
 #Balls within this angle are forgotten if not in current image
 mapping_mem_width=0.4
+mapping_odom=True
 
 #Print state names
 state_debug=True
