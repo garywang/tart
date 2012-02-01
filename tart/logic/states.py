@@ -102,7 +102,11 @@ class ExploreState(State):
             return ApproachState()
         if time.time()-self.start_time>params.state_explore_timeout:
             return ScanState()
-        self.drive.forward()
+        wall=self.map.get_farthest_wall()
+        if wall is not None:
+            self.drive.drive_to_point(wall)
+        else:
+            self.drive.forward()
         return stuck_detect.detect() or self
 
 class ExploreYellowState(State):
