@@ -70,11 +70,7 @@ class Map(threading.Thread):
             print str(len(self.memorized_balls))+" memorized balls"
     
     def update_walls(self, pos, walls):
-        walls=[self.get_abs_loc(vec=wall, rel=pos) for wall in walls]
-        for wall in self.memorized_walls:
-            if math.fabs(self.get_angle(self.get_vector_to(loc=wall, rel=pos))) > params.mapping_mem_width:
-                walls.append(wall)
-        self.memorized_walls=walls[0:100]
+        self.memorized_walls=[self.get_abs_loc(vec=wall, rel=pos) for wall in walls]
         if self.debug:
             print str(len(self.memorized_walls))+" memorized walls"
     
@@ -169,7 +165,7 @@ class MapDisplayThread(threading.Thread):
             for ball in self.map.memorized_balls:
                 cv.Circle(im, self.get_pixel(ball), 2, (0, 0, 155), cv.CV_FILLED)
             for wall in self.map.memorized_walls:
-                cv.Circle(im, self.get_pixel(wall), 2, (0, 255, 255), cv.CV_FILLED)
+                cv.Circle(im, self.get_pixel(wall), 2, (255, 0, 0), cv.CV_FILLED)
             cur_ball=self.map.get_visible_ball() or self.map.get_memorized_ball()
             if cur_ball is not None:
                 cv.Circle(im, self.get_pixel(cur_ball), 2, (0, 0, 255), cv.CV_FILLED)

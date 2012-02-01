@@ -183,7 +183,7 @@ class VisionProcess(multiprocessing.Process):
                 
                 balls=self.find_balls(colors, smaller_im)
                 
-                walls=self.find_walls(colors, smaller_im)
+                walls=self.find_wall_tops(colors, smaller_im)
                 
                 self.pipe.send({"balls": balls, "walls": walls})
                 self.colors=colors
@@ -233,6 +233,30 @@ class VisionProcess(multiprocessing.Process):
             dy=bot[1]-top[1]
             if dx*dx-dy*dy<4.:
                 walls.append(bot)
+        
+        return walls
+    
+    def find_wall_tops(self, numpy.ndarray[numpy.int8_t, ndim=2] colors, im):
+        cdef int height=colors.shape[0], width=colors.shape[1]
+        cdef int i, j, i0
+        cdef double dx, dy
+        cdef numpy.int8_t blue=BLUE
+        
+        walls=[]
+        
+        for j in range(0, width, 10):
+            i=height-1
+            while i>=0 and colors[i, j]!=blue: i-=1
+            i0=i
+            while i>=0 and colors[i, j]==blue: i-=1
+            if i<0:
+                continue
+            bot=self.cam.info.get_vector((i0, j), im, height=8.89)
+            top=self.cam.info.get_vector((i+1, j), im, height=15.24)
+            dx=bot[0]-top[0]
+            dy=bot[1]-top[1]
+            if dx*dx-dy*dy<4.:
+                walls.append(bot[0:2])
         
         return walls
 
