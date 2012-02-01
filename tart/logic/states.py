@@ -31,18 +31,18 @@ class ScanState(State):
         self.angle_duration = random.uniform(2*math.pi, 2*math.pi+params.state_scan_angle_max)
     
     def step(self):
-        if robot.get_time()>params.state_approach_yellow_time:
-            if self.map.get_memorized_wall():
-                return ApproachYellowState()
-        elif self.map.get_visible_ball(): # sees a ball
+        #if robot.get_time()>params.state_approach_yellow_time:
+        #    if self.map.get_memorized_wall():
+        #        return ApproachYellowState()
+        if self.map.get_visible_ball(): # sees a ball
             return ApproachState()
         
         if math.fabs(self.map.get_pos()[2] - self.start_angle) > self.angle_duration:
-            if robot.get_time()>params.state_find_yellow_time:
-                wall=self.map.get_memorized_wall()
-                if wall is not None and \
-                        self.map.get_length(self.map.get_vector_to(wall))>params.state_find_yellow_dist:
-                    return ExploreYellowState()
+            #if robot.get_time()>params.state_find_yellow_time:
+            #    wall=self.map.get_memorized_wall()
+            #    if wall is not None and \
+            #            self.map.get_length(self.map.get_vector_to(wall))>params.state_find_yellow_dist:
+            #        return ExploreYellowState()
             return ExploreState()
         
         self.drive.rotate(self.dir*params.state_scan_speed)
