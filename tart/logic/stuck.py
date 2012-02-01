@@ -37,6 +37,22 @@ class StuckDetector:
                 abs(one[2]-two[2]) )
         
 
+class AvoidWallState(State):
+    
+    def __init__(self, prev_state):
+        State.__init__(self)
+        self.prev_state=prev_state
+    
+    def step(self):
+        wall=self.map.get_closest_wall()
+        if not wall:
+            return self.prev_state
+        vec=self.map.get_vector_to(wall)
+        self.drive.translate(127, math.degrees(math.atan2(-vec[1], -vec[0])))
+        if self.map.get_length(vec)>20.:
+            return self.prev_state
+        return self
+
 class BackUpState(State):
     
     def __init__(self, theta=None):
