@@ -255,7 +255,7 @@ class VisionProcess(multiprocessing.Process):
             top=self.cam.info.get_vector((i+1, j), im, height=15.24)
             dx=bot[0]-top[0]
             dy=bot[1]-top[1]
-            if dx*dx-dy*dy<4.:
+            if dx*dx+dy*dy<16.:
                 walls.append(bot[0:2])
         
         return walls
