@@ -32,14 +32,14 @@ class ScanState(State):
     
     def step(self):
         #if robot.get_time()>params.state_approach_yellow_time:
-        #    if self.map.get_memorized_wall():
+        #    if self.map.get_closest_wall():
         #        return ApproachYellowState()
         if self.map.get_visible_ball(): # sees a ball
             return ApproachState()
         
         if math.fabs(self.map.get_pos()[2] - self.start_angle) > self.angle_duration:
             #if robot.get_time()>params.state_find_yellow_time:
-            #    wall=self.map.get_memorized_wall()
+            #    wall=self.map.get_closest_wall()
             #    if wall is not None and \
             #            self.map.get_length(self.map.get_vector_to(wall))>params.state_find_yellow_dist:
             #        return ExploreYellowState()
@@ -113,7 +113,7 @@ class ExploreYellowState(State):
             return ApproachState()
         if time.time()-self.start_time>params.state_explore_timeout:
             return ScanState()
-        wall=self.map.get_memorized_wall()
+        wall=self.map.get_closest_wall()
         if wall is not None and \
                 self.map.get_length(self.map.get_vector_to(wall))>2*params.state_find_yellow_dist/3:
             self.drive.drive_to_point(wall)
@@ -124,7 +124,7 @@ class ApproachYellowState(State):
     """Approach yellow wall"""
     
     def step(self):
-        wall=self.map.get_memorized_wall()
+        wall=self.map.get_closest_wall()
         if wall is None:
             return ScanState()
         vec=self.map.get_vector_to(wall)

@@ -133,13 +133,24 @@ class Map(threading.Thread):
                 best=ball
         return best
     
-    def get_memorized_wall(self):
+    def get_closest_wall(self):
         """Return memorized wall with shortest distance to current position"""
         best=None
         best_dist=10000000.
         for wall in self.memorized_walls:
             v = self.get_vector_to(wall)
             if self.get_length(v)<best_dist:
+                best_dist=self.get_length(v)
+                best=wall
+        return best
+    
+    def get_farthest_wall(self):
+        """Return memorized wall with longest distance to current position"""
+        best=None
+        best_dist=-1.
+        for wall in self.memorized_walls:
+            v = self.get_vector_to(wall)
+            if self.get_length(v)>best_dist:
                 best_dist=self.get_length(v)
                 best=wall
         return best
