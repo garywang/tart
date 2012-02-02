@@ -52,7 +52,7 @@ def convert_to_colors(numpy.ndarray[numpy.uint8_t, ndim=3] im):
     cdef numpy.ndarray[numpy.int8_t, ndim=2] colors=numpy.empty((height, width), dtype=numpy.int8)
     for i in range(height):
         for j in range(width):
-            colors[height-i, width-j]=color_arr2[im[i, j, 0], im[i, j, 1], im[i, j, 2]]
+            colors[height-i-1, width-j-1]=color_arr2[im[i, j, 0], im[i, j, 1], im[i, j, 2]]
     return colors
     
 def convert_to_image(numpy.ndarray[numpy.int8_t, ndim=2] colors):
@@ -207,7 +207,7 @@ class VisionProcess(multiprocessing.Process):
     def is_ball(self, blob, im):
         """Check if a list of pixels is a ball"""
         size=self.cam.info.get_pixel_size(blob[0], im)*len(blob)
-        return size>12. and size<30. and len(blob)>10
+        return size>10. and size<30. and len(blob)>10
     
     def find_walls(self, numpy.ndarray[numpy.int8_t, ndim=2] colors, im, numpy.int8_t color=YELLOW):
         cdef int height=colors.shape[0], width=colors.shape[1]
