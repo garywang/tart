@@ -17,7 +17,7 @@ class WallFollowController:
     def follow_wall(self):
         """Uses a simple form of control to follow walls.
         
-        If its back is to a wall, it translates rightward along the wall. Otherwise, it drives backward until it hits a wall."""
+        If its back is to a wall, it translates leftward along the wall. Otherwise, it drives backward until it hits a wall."""
         if self.at_wall():
             self.track_wall()
         else:
@@ -35,11 +35,11 @@ class WallFollowController:
     def track_wall(self):
         side_dist = self.side.get_dist()
         if side_dist < 25: # Too close
-            self.drive.rotate(-30)
+            self.drive.rotate(+30)
         elif side_dist > 30: # Too far
-            self.drive.rotate(30)
+            self.drive.rotate(-30)
         else:
-            self.drive.translate(127, 70)
+            self.drive.translate(127, 270)
 
     def find_wall(self): # Possibly might need to be more involved.
         self.drive.translate(127, 180)
