@@ -10,8 +10,8 @@ class WallFollowController:
         
         Takes port numbers for two short IR sensors: back, facing the back of the robot; and side, facing 45 degrees from the back."""
         self.drive = drive
-        self.back = sensors.ShortIR(ard, back_port)
-        self.side = sensors.ShortIR(ard, side_port)
+        self.back = sensor.ShortIR(ard, back_port)
+        self.side = sensor.ShortIR(ard, side_port)
         self.wall = False
 
     def follow_wall(self):

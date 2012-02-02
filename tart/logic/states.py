@@ -107,7 +107,7 @@ class ExploreState(State):
         #if random.uniform(0, 1)>0.5:
         if True:
             self.wall_follow=WallFollowController(robot.ard, self.drive)
-        else
+        else:
             self.wall_follow=None
     
     def step(self):
