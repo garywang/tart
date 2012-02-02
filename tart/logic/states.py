@@ -103,7 +103,8 @@ class ExploreState(State):
     
     def __init__(self):
         State.__init__(self)
-        if random.uniform(0, 1)>0.5:
+        #if random.uniform(0, 1)>0.5:
+        if False:
             self.wall_follow=WallFollowController(robot.ard, self.drive)
         else
             self.wall_follow=None
