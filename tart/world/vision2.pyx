@@ -52,7 +52,7 @@ def convert_to_colors(numpy.ndarray[numpy.uint8_t, ndim=3] im):
     cdef numpy.ndarray[numpy.int8_t, ndim=2] colors=numpy.empty((height, width), dtype=numpy.int8)
     for i in range(height):
         for j in range(width):
-            colors[i, j]=color_arr2[im[i, j, 0], im[i, j, 1], im[i, j, 2]]
+            colors[height-i, width-j]=color_arr2[im[i, j, 0], im[i, j, 1], im[i, j, 2]]
     return colors
     
 def convert_to_image(numpy.ndarray[numpy.int8_t, ndim=2] colors):
