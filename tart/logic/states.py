@@ -1,6 +1,7 @@
 import time, math, random, sys
 sys.path.append("/home/maslab-team-5/Maslab/tart/Libraries/")
 from tart import params
+from tart.control.wall_follow import WallFollowController
 robot = None
 stuck_detect = None
 
@@ -100,16 +101,26 @@ class CaptureState(State):
 class ExploreState(State):
     """Go somewhere else so it can see some balls"""
     
+    def __init__(self):
+        State.__init__(self)
+        if random.uniform(0, 1)>0.5:
+            self.wall_follow=WallFollowController(robot.ard, self.drive)
+        else
+            self.wall_follow=None
+    
     def step(self):
         if self.map.get_visible_ball():
             return ApproachState()
         if time.time()-self.start_time>params.state_explore_timeout:
             return ScanState()
-        wall=self.map.get_farthest_wall()
-        if wall is not None:
-            self.drive.drive_to_point(wall)
+        if self.wall_follow is not None:
+            self.wall_follow.follow_wall()
         else:
-            self.drive.forward()
+            wall=self.map.get_farthest_wall()
+            if wall is not None:
+                self.drive.drive_to_point(wall)
+            else:
+                self.drive.forward()
         return stuck_detect.detect() or self
 
 class ExploreYellowState(State):

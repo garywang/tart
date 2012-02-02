@@ -5,7 +5,7 @@ from tart.sensors import sensor
 from tart import params
 
 class WallFollowController:
-    def __init__(self, ard, drive, back_port, side_port):
+    def __init__(self, ard, drive, back_port=8, side_port=9):
         """Follows a wall.
         
         Takes port numbers for two short IR sensors: back, facing the back of the robot; and side, facing 60 degrees from the back."""
@@ -24,16 +24,16 @@ class WallFollowController:
 
     def at_wall(self):
         back_dist = self.back.get_dist()
-        return back_dist < 8
+        return back_dist < 5
 
     def track_wall(self):
         side_dist = self.side.get_dist()
-        if side_dist < 15: # Too close
+        if side_dist < 8: # Too close
             self.drive.rotate(-30)
-        elif side_dist > 25: # Too far
+        elif side_dist > 10: # Too far
             self.drive.rotate(30)
         else:
-            self.drive.translate(127, 90)
+            self.drive.translate(127, 70)
 
     def find_wall(self): # Possibly might need to be more involved.
         self.drive.translate(127, 180)
