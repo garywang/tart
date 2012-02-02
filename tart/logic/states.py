@@ -30,8 +30,9 @@ class ScanState(State):
             self.dir=1
         self.start_angle = self.map.get_pos()[2]
         self.angle_duration = random.uniform(2*math.pi, 2*math.pi+params.state_scan_angle_max)
-        if random.uniform(0, 1)>0.5:
-            self.angle_duration = 0
+        #if random.uniform(0, 1)>0.5:
+        if True:
+            self.angle_duration = 0 # Enter ExploreState immediately.
             
     
     def step(self):
@@ -104,7 +105,7 @@ class ExploreState(State):
     def __init__(self):
         State.__init__(self)
         #if random.uniform(0, 1)>0.5:
-        if False:
+        if True:
             self.wall_follow=WallFollowController(robot.ard, self.drive)
         else
             self.wall_follow=None
