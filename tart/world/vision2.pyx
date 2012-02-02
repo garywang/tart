@@ -173,9 +173,10 @@ class VisionProcess(multiprocessing.Process):
             while self.pipe.poll() == False or self.pipe.recv() == True:
                 im=self.cam.get_image()
                 small_im=cv.CreateImage((im.width/2, im.height/2), cv.IPL_DEPTH_8U, 3)
-                cv.PyrDown(im, small_im);
+                cv.PyrDown(im, small_im)
                 smaller_im=cv.CreateImage((im.width/4, im.height/4), cv.IPL_DEPTH_8U, 3)
-                cv.PyrDown(small_im, smaller_im);
+                cv.PyrDown(small_im, smaller_im)
+                cv.Smooth(smaller_im, smaller_im)
                 
                 mat=numpy.asarray(cv.GetMat(smaller_im))
                 
@@ -206,7 +207,7 @@ class VisionProcess(multiprocessing.Process):
     def is_ball(self, blob, im):
         """Check if a list of pixels is a ball"""
         size=self.cam.info.get_pixel_size(blob[0], im)*len(blob)
-        return size>15 and size<45
+        return size>12. and size<30. and len(blob)>10
     
     def find_walls(self, numpy.ndarray[numpy.int8_t, ndim=2] colors, im, numpy.int8_t color=YELLOW):
         cdef int height=colors.shape[0], width=colors.shape[1]
