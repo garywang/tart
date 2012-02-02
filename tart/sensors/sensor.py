@@ -10,12 +10,17 @@ class BumpSensor(arduino.DigitalSensor):
         return self.getValue() == 0
 
 class ShortIR(arduino.AnalogSensor):
-    """Short IR wrapper class"""
+    """Short IR (Sharp 2Y0A21) wrapper class"""
 
     def get_dist(self):
-        """Returns a distance in inches"""
+        """Returns a distance in cm"""
         val = self.getValue()
-        return 1./(0.186*val+0.032)
+        if val < 0.4:
+            return 100
+        elif val > 2.5:
+            return 0
+        else:
+            return 24./(val-0.1)
 
 if __name__ == "__main__":
     try:
