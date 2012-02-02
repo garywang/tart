@@ -29,6 +29,9 @@ class ScanState(State):
             self.dir=1
         self.start_angle = self.map.get_pos()[2]
         self.angle_duration = random.uniform(2*math.pi, 2*math.pi+params.state_scan_angle_max)
+        if random.uniform(0, 1)>0.5:
+            self.angle_duration = 0
+            
     
     def step(self):
         #if robot.get_time()>params.state_approach_yellow_time:
