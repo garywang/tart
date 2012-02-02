@@ -8,10 +8,11 @@ class WallFollowController:
     def __init__(self, ard, drive, back_port=8, side_port=9):
         """Follows a wall.
         
-        Takes port numbers for two short IR sensors: back, facing the back of the robot; and side, facing 60 degrees from the back."""
+        Takes port numbers for two short IR sensors: back, facing the back of the robot; and side, facing 45 degrees from the back."""
         self.drive = drive
         self.back = sensors.ShortIR(ard, back_port)
         self.side = sensors.ShortIR(ard, side_port)
+        self.wall = False
 
     def follow_wall(self):
         """Uses a simple form of control to follow walls.
@@ -25,7 +26,11 @@ class WallFollowController:
     def at_wall(self):
         back_dist = self.back.get_dist()
         side_dist = self.side.get_dist()
-        return min(back_dist, side_dist) < 20
+        if min(back_dist, side_dist) < 15: # Found a wall
+            self.wall = True
+        elif min(back_dist, side_dist) > 30: # Lost the wall
+            self.wall = False
+        return self.wall
 
     def track_wall(self):
         side_dist = self.side.get_dist()
