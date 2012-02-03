@@ -26,6 +26,7 @@ class WallFollowController:
     def at_wall(self):
         back_dist = self.back.get_dist()
         side_dist = self.side.get_dist()
+        print "Distance (back, side):", (back_dist, side_dist)
         if min(back_dist, side_dist) < 15: # Found a wall
             self.wall = True
         elif min(back_dist, side_dist) > 30: # Lost the wall

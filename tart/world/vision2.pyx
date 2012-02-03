@@ -208,7 +208,7 @@ class VisionProcess(multiprocessing.Process):
     def is_ball(self, blob, im):
         """Check if a list of pixels is a ball"""
         size=self.cam.info.get_pixel_size(blob[0], im)*len(blob)
-        return size>10. and size<30. and len(blob)>10
+        return size>12. and size<50. and len(blob)>10
     
     def find_walls(self, numpy.ndarray[numpy.int8_t, ndim=2] colors, im, numpy.int8_t color=YELLOW):
         cdef int height=colors.shape[0], width=colors.shape[1]
@@ -233,7 +233,7 @@ class VisionProcess(multiprocessing.Process):
             top=self.cam.info.get_vector((i+1, j), im, height=15.24)
             dx=bot[0]-top[0]
             dy=bot[1]-top[1]
-            if dx*dx+dy*dy<25.:
+            if dx*dx+dy*dy<50.:
                 walls.append(bot)
         
         return walls

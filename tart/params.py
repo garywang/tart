@@ -7,7 +7,7 @@ from tart.world.trig import CameraInfo
 #Use WrappedCamera
 webcam_wrapped=True
 #Physical information about camera
-webcam_info=CameraInfo(cam_height=20., height_angle=0.70, width_angle=0.93, min_dist=21.)
+webcam_info=CameraInfo(cam_height=11.8, height_angle=0.70, width_angle=0.93, min_dist=15.4)
 #Camera number (0 or 1)
 webcam_num=1
 
@@ -18,8 +18,8 @@ vision_debug=False
 mouse_scale=160.
 
 #Mouse numbers (0, 1, or 2)
-odometry_num1=1
-odometry_num2=2
+odometry_num1=2
+odometry_num2=1
 #Half the distance between the mice, in cm
 odometry_radius=7.75
 #Time, in seconds, over which to calculate mouse velocities
@@ -34,17 +34,17 @@ mapping_odom=True
 #Print state names
 state_debug=True
 #Speed robot turns at when scanning for balls
-state_scan_speed=50
+state_scan_speed=40
 #Maximum extra angle that robot rotates after completing full circle
 state_scan_angle_max=math.pi
 #Distance, in cm, that causes robot to enter CaptureState
-state_capture_dist=25
+state_capture_dist=30
 #Robot will not enter CaptureState if angle to ball is greater than this
 state_capture_max_angle=0.1
 #Time, in seconds, that causes robot to leave CaptureState
 state_capture_timeout=4
 #Distance, in cm, that causes robot to leave CaptureState
-state_capture_exit_dist=5
+state_capture_exit_dist=0 #never
 #Time, in seconds, that robot stays in ExploreState
 state_explore_timeout=5
 #Time, in seconds, after which the robot will move closer to the yellow wall
