@@ -34,7 +34,7 @@ class CameraInfo():
         y_angle=math.atan((1.-r)*math.sin(self.height_angle)/(r+(1.-r)*math.cos(self.height_angle)))
         y=dheight*math.tan(y_angle+self.low_angle)
         x=math.sqrt(y*y+dheight*dheight)*math.tan(self.width_angle/2)*2*(c-.5)
-        return (x, y, -dheight)
+        return (x, y+5., -dheight)
     
     def get_pixel_size(self, rc, im):
         """Find the size of a pixel"""
