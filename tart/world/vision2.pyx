@@ -184,7 +184,8 @@ class VisionProcess(multiprocessing.Process):
                 
                 balls=self.find_balls(colors, smaller_im)
                 
-                walls=self.find_wall_tops(colors, smaller_im)
+                #walls=self.find_wall_tops(colors, smaller_im)
+                walls=None
                 
                 self.pipe.send({"balls": balls, "walls": walls})
                 self.colors=colors
